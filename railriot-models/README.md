@@ -5,7 +5,7 @@ Modèles voxel générés par code (Python + numpy, Blender en ligne de commande
 
 | Modèle | Référence | Taille (L × l × h, studs) | Triangles (contour compris) | Textures |
 |---|---|---|---|---|
-| `storm_serpent` | serpent d'orage bleu, wagon en bois | ≈ 44,5 × 12,8 × 29,4 | 29 042 | 3 × 1024² |
+| `storm_serpent` | serpent d'orage bleu, wagon en bois | ≈ 44,5 × 12,8 × 29,4 | 29 058 | 3 × 1024² |
 | `fire_dragon` | dragon de feu, wagon industriel | ≈ 44,3 × 10,6 × 21,1 | 24 864 | 3 × 1024² |
 
 Version actuelle : **v2** (`output/<modèle>/v2/`). La v1 est gardée à côté pour comparer.
