@@ -1,0 +1,2608 @@
+{
+ "name": "storm_serpent",
+ "version": "v1",
+ "units": "studs",
+ "axes": "Roblox: X = avant du train, Y = haut, Z = -largeur (glTF Y-up)",
+ "cubeSize": {
+  "small": 0.16,
+  "big": 0.48
+ },
+ "groundHeight": 0.0,
+ "size": [
+  44.8,
+  29.44,
+  12.48
+ ],
+ "triangles": {
+  "meshes": 23752,
+  "neon": 744,
+  "total": 24496
+ },
+ "textures": [
+  {
+   "file": "storm_serpent_atlas1.png",
+   "bytes": 497797
+  },
+  {
+   "file": "storm_serpent_atlas2.png",
+   "bytes": 528160
+  },
+  {
+   "file": "storm_serpent_atlas3.png",
+   "bytes": 552673
+  }
+ ],
+ "parts": [
+  {
+   "name": "Wagon",
+   "parent": null,
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "meshes": [
+    "Wagon",
+    "Wagon_2"
+   ],
+   "atlas": [
+    "storm_serpent_atlas1.png",
+    "storm_serpent_atlas2.png"
+   ],
+   "triangles": 13792
+  },
+  {
+   "name": "Body",
+   "parent": "Wagon",
+   "pivot": [
+    0.0,
+    6.72,
+    0.0
+   ],
+   "meshes": [
+    "Body"
+   ],
+   "atlas": [
+    "storm_serpent_atlas3.png"
+   ],
+   "triangles": 3358
+  },
+  {
+   "name": "Tail1",
+   "parent": "Body",
+   "pivot": [
+    -14.4,
+    7.9,
+    0.0
+   ],
+   "meshes": [
+    "Tail1"
+   ],
+   "atlas": [
+    "storm_serpent_atlas2.png"
+   ],
+   "triangles": 460
+  },
+  {
+   "name": "Tail2",
+   "parent": "Tail1",
+   "pivot": [
+    -17.76,
+    7.7,
+    0.0
+   ],
+   "meshes": [
+    "Tail2"
+   ],
+   "atlas": [
+    "storm_serpent_atlas3.png"
+   ],
+   "triangles": 614
+  },
+  {
+   "name": "Neck1",
+   "parent": "Body",
+   "pivot": [
+    10.0,
+    10.08,
+    0.0
+   ],
+   "meshes": [
+    "Neck1"
+   ],
+   "atlas": [
+    "storm_serpent_atlas2.png"
+   ],
+   "triangles": 958
+  },
+  {
+   "name": "Neck2",
+   "parent": "Neck1",
+   "pivot": [
+    10.5,
+    17.28,
+    0.0
+   ],
+   "meshes": [
+    "Neck2"
+   ],
+   "atlas": [
+    "storm_serpent_atlas3.png"
+   ],
+   "triangles": 1226
+  },
+  {
+   "name": "Head",
+   "parent": "Neck2",
+   "pivot": [
+    14.4,
+    25.6,
+    0.0
+   ],
+   "meshes": [
+    "Head"
+   ],
+   "atlas": [
+    "storm_serpent_atlas1.png"
+   ],
+   "triangles": 3210
+  },
+  {
+   "name": "Jaw",
+   "parent": "Head",
+   "pivot": [
+    16.32,
+    25.92,
+    0.0
+   ],
+   "meshes": [
+    "Jaw"
+   ],
+   "atlas": [
+    "storm_serpent_atlas3.png"
+   ],
+   "triangles": 134
+  }
+ ],
+ "neon": [
+  {
+   "name": "Lantern_BR",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    166,
+    58
+   ],
+   "position": [
+    -22.0,
+    5.28,
+    3.84
+   ],
+   "size": [
+    0.44,
+    0.92,
+    0.44
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "Lantern_BL",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    166,
+    58
+   ],
+   "position": [
+    -22.0,
+    5.28,
+    -3.84
+   ],
+   "size": [
+    0.44,
+    0.92,
+    0.44
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "Lantern_FR",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    166,
+    58
+   ],
+   "position": [
+    22.0,
+    5.28,
+    3.84
+   ],
+   "size": [
+    0.44,
+    0.92,
+    0.44
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "Lantern_FL",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    166,
+    58
+   ],
+   "position": [
+    22.0,
+    5.28,
+    -3.84
+   ],
+   "size": [
+    0.44,
+    0.92,
+    0.44
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "AlcoveCrystalR",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    0.0,
+    4.5,
+    4.08
+   ],
+   "size": [
+    0.86,
+    1.86,
+    0.86
+   ],
+   "rotationMatrix": [
+    [
+     0.70711,
+     0.0,
+     0.70711
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     -0.70711,
+     0.0,
+     0.70711
+    ]
+   ]
+  },
+  {
+   "name": "AlcoveCrystalTipR",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    196,
+    238,
+    255
+   ],
+   "position": [
+    0.0,
+    5.75,
+    4.08
+   ],
+   "size": [
+    0.46,
+    0.66,
+    0.46
+   ],
+   "rotationMatrix": [
+    [
+     0.70711,
+     0.0,
+     0.70711
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     -0.70711,
+     0.0,
+     0.70711
+    ]
+   ]
+  },
+  {
+   "name": "AlcoveShardRB",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -0.95,
+    4.0,
+    4.08
+   ],
+   "size": [
+    0.46,
+    0.96,
+    0.46
+   ],
+   "rotationMatrix": [
+    [
+     0.62434,
+     -0.46947,
+     0.62434
+    ],
+    [
+     0.33197,
+     0.88295,
+     0.33197
+    ],
+    [
+     -0.70711,
+     0.0,
+     0.70711
+    ]
+   ]
+  },
+  {
+   "name": "AlcoveShardRF",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    0.95,
+    4.0,
+    4.08
+   ],
+   "size": [
+    0.46,
+    0.96,
+    0.46
+   ],
+   "rotationMatrix": [
+    [
+     0.62434,
+     0.46947,
+     0.62434
+    ],
+    [
+     -0.33197,
+     0.88295,
+     -0.33197
+    ],
+    [
+     -0.70711,
+     0.0,
+     0.70711
+    ]
+   ]
+  },
+  {
+   "name": "AlcoveCrystalL",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    0.0,
+    4.5,
+    -4.08
+   ],
+   "size": [
+    0.86,
+    1.86,
+    0.86
+   ],
+   "rotationMatrix": [
+    [
+     0.70711,
+     0.0,
+     0.70711
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     -0.70711,
+     0.0,
+     0.70711
+    ]
+   ]
+  },
+  {
+   "name": "AlcoveCrystalTipL",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    196,
+    238,
+    255
+   ],
+   "position": [
+    0.0,
+    5.75,
+    -4.08
+   ],
+   "size": [
+    0.46,
+    0.66,
+    0.46
+   ],
+   "rotationMatrix": [
+    [
+     0.70711,
+     0.0,
+     0.70711
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     -0.70711,
+     0.0,
+     0.70711
+    ]
+   ]
+  },
+  {
+   "name": "AlcoveShardLB",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -0.95,
+    4.0,
+    -4.08
+   ],
+   "size": [
+    0.46,
+    0.96,
+    0.46
+   ],
+   "rotationMatrix": [
+    [
+     0.62434,
+     -0.46947,
+     0.62434
+    ],
+    [
+     0.33197,
+     0.88295,
+     0.33197
+    ],
+    [
+     -0.70711,
+     0.0,
+     0.70711
+    ]
+   ]
+  },
+  {
+   "name": "AlcoveShardLF",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    0.95,
+    4.0,
+    -4.08
+   ],
+   "size": [
+    0.46,
+    0.96,
+    0.46
+   ],
+   "rotationMatrix": [
+    [
+     0.62434,
+     0.46947,
+     0.62434
+    ],
+    [
+     -0.33197,
+     0.88295,
+     -0.33197
+    ],
+    [
+     -0.70711,
+     0.0,
+     0.70711
+    ]
+   ]
+  },
+  {
+   "name": "WheelB17R",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    58,
+    138,
+    255
+   ],
+   "position": [
+    -17.04,
+    1.68,
+    4.88
+   ],
+   "size": [
+    2.52,
+    0.28,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "WheelB17L",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    58,
+    138,
+    255
+   ],
+   "position": [
+    -17.04,
+    1.68,
+    -4.88
+   ],
+   "size": [
+    2.52,
+    0.28,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "WheelB11R",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    58,
+    138,
+    255
+   ],
+   "position": [
+    -11.76,
+    1.68,
+    4.88
+   ],
+   "size": [
+    2.52,
+    0.28,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "WheelB11L",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    58,
+    138,
+    255
+   ],
+   "position": [
+    -11.76,
+    1.68,
+    -4.88
+   ],
+   "size": [
+    2.52,
+    0.28,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "WheelF11R",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    58,
+    138,
+    255
+   ],
+   "position": [
+    11.76,
+    1.68,
+    4.88
+   ],
+   "size": [
+    2.52,
+    0.28,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "WheelF11L",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    58,
+    138,
+    255
+   ],
+   "position": [
+    11.76,
+    1.68,
+    -4.88
+   ],
+   "size": [
+    2.52,
+    0.28,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "WheelF17R",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    58,
+    138,
+    255
+   ],
+   "position": [
+    17.04,
+    1.68,
+    4.88
+   ],
+   "size": [
+    2.52,
+    0.28,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "WheelF17L",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    58,
+    138,
+    255
+   ],
+   "position": [
+    17.04,
+    1.68,
+    -4.88
+   ],
+   "size": [
+    2.52,
+    0.28,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "UnderBarR",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    58,
+    138,
+    255
+   ],
+   "position": [
+    0.0,
+    1.68,
+    4.4
+   ],
+   "size": [
+    3.8,
+    0.28,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "UnderBarL",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    58,
+    138,
+    255
+   ],
+   "position": [
+    0.0,
+    1.68,
+    -4.4
+   ],
+   "size": [
+    3.8,
+    0.28,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "Lantern_BR",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    166,
+    58
+   ],
+   "position": [
+    -10.56,
+    5.28,
+    5.68
+   ],
+   "size": [
+    0.44,
+    0.92,
+    0.44
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "Lantern_FR",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    166,
+    58
+   ],
+   "position": [
+    10.56,
+    5.28,
+    5.68
+   ],
+   "size": [
+    0.44,
+    0.92,
+    0.44
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "Lantern_BL",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    166,
+    58
+   ],
+   "position": [
+    -10.56,
+    5.28,
+    -5.68
+   ],
+   "size": [
+    0.44,
+    0.92,
+    0.44
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "Lantern_FL",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    166,
+    58
+   ],
+   "position": [
+    10.56,
+    5.28,
+    -5.68
+   ],
+   "size": [
+    0.44,
+    0.92,
+    0.44
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "Crystal1",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -2.9256,
+    14.9967,
+    -0.0
+   ],
+   "size": [
+    2.36,
+    4.76,
+    2.0
+   ],
+   "rotationMatrix": [
+    [
+     0.70614,
+     -0.05234,
+     0.70614
+    ],
+    [
+     0.03701,
+     0.99863,
+     0.03701
+    ],
+    [
+     -0.70711,
+     0.0,
+     0.70711
+    ]
+   ]
+  },
+  {
+   "name": "Crystal1Mid",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -3.1035,
+    18.3921,
+    -0.0
+   ],
+   "size": [
+    1.544,
+    1.96,
+    1.304
+   ],
+   "rotationMatrix": [
+    [
+     0.70614,
+     -0.05234,
+     0.70614
+    ],
+    [
+     0.03701,
+     0.99863,
+     0.03701
+    ],
+    [
+     -0.70711,
+     0.0,
+     0.70711
+    ]
+   ]
+  },
+  {
+   "name": "Crystal1Tip",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    196,
+    238,
+    255
+   ],
+   "position": [
+    -3.1873,
+    19.9899,
+    -0.0
+   ],
+   "size": [
+    0.824,
+    1.16,
+    0.68
+   ],
+   "rotationMatrix": [
+    [
+     0.70614,
+     -0.05234,
+     0.70614
+    ],
+    [
+     0.03701,
+     0.99863,
+     0.03701
+    ],
+    [
+     -0.70711,
+     0.0,
+     0.70711
+    ]
+   ]
+  },
+  {
+   "name": "Crystal2",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -6.5399,
+    13.7173,
+    -0.3184
+   ],
+   "size": [
+    1.86,
+    3.56,
+    1.575
+   ],
+   "rotationMatrix": [
+    [
+     0.71164,
+     0.25563,
+     0.65438
+    ],
+    [
+     -0.07617,
+     0.95403,
+     -0.28986
+    ],
+    [
+     -0.6984,
+     0.15643,
+     0.6984
+    ]
+   ]
+  },
+  {
+   "name": "Crystal2Mid",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -5.888,
+    16.15,
+    0.0805
+   ],
+   "size": [
+    1.214,
+    1.46,
+    1.024
+   ],
+   "rotationMatrix": [
+    [
+     0.71164,
+     0.25563,
+     0.65438
+    ],
+    [
+     -0.07617,
+     0.95403,
+     -0.28986
+    ],
+    [
+     -0.6984,
+     0.15643,
+     0.6984
+    ]
+   ]
+  },
+  {
+   "name": "Crystal2Tip",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    196,
+    238,
+    255
+   ],
+   "position": [
+    -5.5812,
+    17.2949,
+    0.2682
+   ],
+   "size": [
+    0.644,
+    0.86,
+    0.53
+   ],
+   "rotationMatrix": [
+    [
+     0.71164,
+     0.25563,
+     0.65438
+    ],
+    [
+     -0.07617,
+     0.95403,
+     -0.28986
+    ],
+    [
+     -0.6984,
+     0.15643,
+     0.6984
+    ]
+   ]
+  },
+  {
+   "name": "Crystal3",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    1.3092,
+    14.0317,
+    0.2996
+   ],
+   "size": [
+    1.96,
+    3.8,
+    1.66
+   ],
+   "rotationMatrix": [
+    [
+     0.71164,
+     -0.25563,
+     0.65438
+    ],
+    [
+     0.07617,
+     0.95403,
+     0.28986
+    ],
+    [
+     -0.6984,
+     -0.15643,
+     0.6984
+    ]
+   ]
+  },
+  {
+   "name": "Crystal3Mid",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    0.6139,
+    16.6267,
+    -0.1259
+   ],
+   "size": [
+    1.28,
+    1.56,
+    1.08
+   ],
+   "rotationMatrix": [
+    [
+     0.71164,
+     -0.25563,
+     0.65438
+    ],
+    [
+     0.07617,
+     0.95403,
+     0.28986
+    ],
+    [
+     -0.6984,
+     -0.15643,
+     0.6984
+    ]
+   ]
+  },
+  {
+   "name": "Crystal3Tip",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    196,
+    238,
+    255
+   ],
+   "position": [
+    0.2867,
+    17.8479,
+    -0.3261
+   ],
+   "size": [
+    0.68,
+    0.92,
+    0.56
+   ],
+   "rotationMatrix": [
+    [
+     0.71164,
+     -0.25563,
+     0.65438
+    ],
+    [
+     0.07617,
+     0.95403,
+     0.28986
+    ],
+    [
+     -0.6984,
+     -0.15643,
+     0.6984
+    ]
+   ]
+  },
+  {
+   "name": "Crystal4",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -10.0476,
+    12.1847,
+    0.2163
+   ],
+   "size": [
+    1.46,
+    2.6,
+    1.235
+   ],
+   "rotationMatrix": [
+    [
+     0.59927,
+     0.41851,
+     0.68245
+    ],
+    [
+     -0.38803,
+     0.89749,
+     -0.20965
+    ],
+    [
+     -0.70023,
+     -0.13917,
+     0.70023
+    ]
+   ]
+  },
+  {
+   "name": "Crystal4Mid",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -9.265,
+    13.863,
+    -0.044
+   ],
+   "size": [
+    0.95,
+    1.06,
+    0.8
+   ],
+   "rotationMatrix": [
+    [
+     0.59927,
+     0.41851,
+     0.68245
+    ],
+    [
+     -0.38803,
+     0.89749,
+     -0.20965
+    ],
+    [
+     -0.70023,
+     -0.13917,
+     0.70023
+    ]
+   ]
+  },
+  {
+   "name": "Crystal4Tip",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    196,
+    238,
+    255
+   ],
+   "position": [
+    -8.8967,
+    14.6528,
+    -0.1664
+   ],
+   "size": [
+    0.5,
+    0.62,
+    0.41
+   ],
+   "rotationMatrix": [
+    [
+     0.59927,
+     0.41851,
+     0.68245
+    ],
+    [
+     -0.38803,
+     0.89749,
+     -0.20965
+    ],
+    [
+     -0.70023,
+     -0.13917,
+     0.70023
+    ]
+   ]
+  },
+  {
+   "name": "Crystal5",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    5.0009,
+    12.6283,
+    -0.2079
+   ],
+   "size": [
+    1.46,
+    2.72,
+    1.235
+   ],
+   "rotationMatrix": [
+    [
+     0.5924,
+     -0.4341,
+     0.67868
+    ],
+    [
+     0.39843,
+     0.89005,
+     0.22152
+    ],
+    [
+     -0.70023,
+     0.13917,
+     0.70023
+    ]
+   ]
+  },
+  {
+   "name": "Crystal5Mid",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    4.1523,
+    14.3683,
+    0.0641
+   ],
+   "size": [
+    0.95,
+    1.11,
+    0.8
+   ],
+   "rotationMatrix": [
+    [
+     0.5924,
+     -0.4341,
+     0.67868
+    ],
+    [
+     0.39843,
+     0.89005,
+     0.22152
+    ],
+    [
+     -0.70023,
+     0.13917,
+     0.70023
+    ]
+   ]
+  },
+  {
+   "name": "Crystal5Tip",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    196,
+    238,
+    255
+   ],
+   "position": [
+    3.7529,
+    15.1872,
+    0.1922
+   ],
+   "size": [
+    0.5,
+    0.65,
+    0.41
+   ],
+   "rotationMatrix": [
+    [
+     0.5924,
+     -0.4341,
+     0.67868
+    ],
+    [
+     0.39843,
+     0.89005,
+     0.22152
+    ],
+    [
+     -0.70023,
+     0.13917,
+     0.70023
+    ]
+   ]
+  },
+  {
+   "name": "Crystal6",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -4.9114,
+    11.443,
+    -2.0493
+   ],
+   "size": [
+    1.16,
+    1.88,
+    0.98
+   ],
+   "rotationMatrix": [
+    [
+     0.73793,
+     0.09229,
+     0.66853
+    ],
+    [
+     0.25624,
+     0.87811,
+     -0.40406
+    ],
+    [
+     -0.62434,
+     0.46947,
+     0.62434
+    ]
+   ]
+  },
+  {
+   "name": "Crystal6Mid",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -4.7859,
+    12.6372,
+    -1.4108
+   ],
+   "size": [
+    0.752,
+    0.76,
+    0.632
+   ],
+   "rotationMatrix": [
+    [
+     0.73793,
+     0.09229,
+     0.66853
+    ],
+    [
+     0.25624,
+     0.87811,
+     -0.40406
+    ],
+    [
+     -0.62434,
+     0.46947,
+     0.62434
+    ]
+   ]
+  },
+  {
+   "name": "Crystal6Tip",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    196,
+    238,
+    255
+   ],
+   "position": [
+    -4.7268,
+    13.1992,
+    -1.1104
+   ],
+   "size": [
+    0.392,
+    0.44,
+    0.32
+   ],
+   "rotationMatrix": [
+    [
+     0.73793,
+     0.09229,
+     0.66853
+    ],
+    [
+     0.25624,
+     0.87811,
+     -0.40406
+    ],
+    [
+     -0.62434,
+     0.46947,
+     0.62434
+    ]
+   ]
+  },
+  {
+   "name": "Crystal7",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -4.9114,
+    11.443,
+    2.0493
+   ],
+   "size": [
+    1.16,
+    1.88,
+    0.98
+   ],
+   "rotationMatrix": [
+    [
+     0.66853,
+     0.09229,
+     0.73793
+    ],
+    [
+     -0.40406,
+     0.87811,
+     0.25624
+    ],
+    [
+     -0.62434,
+     -0.46947,
+     0.62434
+    ]
+   ]
+  },
+  {
+   "name": "Crystal7Mid",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -4.7859,
+    12.6372,
+    1.4108
+   ],
+   "size": [
+    0.752,
+    0.76,
+    0.632
+   ],
+   "rotationMatrix": [
+    [
+     0.66853,
+     0.09229,
+     0.73793
+    ],
+    [
+     -0.40406,
+     0.87811,
+     0.25624
+    ],
+    [
+     -0.62434,
+     -0.46947,
+     0.62434
+    ]
+   ]
+  },
+  {
+   "name": "Crystal7Tip",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    196,
+    238,
+    255
+   ],
+   "position": [
+    -4.7268,
+    13.1992,
+    1.1104
+   ],
+   "size": [
+    0.392,
+    0.44,
+    0.32
+   ],
+   "rotationMatrix": [
+    [
+     0.66853,
+     0.09229,
+     0.73793
+    ],
+    [
+     -0.40406,
+     0.87811,
+     0.25624
+    ],
+    [
+     -0.62434,
+     -0.46947,
+     0.62434
+    ]
+   ]
+  },
+  {
+   "name": "Crystal8",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -0.5085,
+    11.5718,
+    -2.15
+   ],
+   "size": [
+    1.06,
+    1.76,
+    0.895
+   ],
+   "rotationMatrix": [
+    [
+     0.65102,
+     -0.12053,
+     0.74943
+    ],
+    [
+     0.44852,
+     0.8576,
+     -0.2517
+    ],
+    [
+     -0.61237,
+     0.5,
+     0.61237
+    ]
+   ]
+  },
+  {
+   "name": "Crystal8Mid",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -0.6621,
+    12.6653,
+    -1.5125
+   ],
+   "size": [
+    0.686,
+    0.71,
+    0.576
+   ],
+   "rotationMatrix": [
+    [
+     0.65102,
+     -0.12053,
+     0.74943
+    ],
+    [
+     0.44852,
+     0.8576,
+     -0.2517
+    ],
+    [
+     -0.61237,
+     0.5,
+     0.61237
+    ]
+   ]
+  },
+  {
+   "name": "Crystal8Tip",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    196,
+    238,
+    255
+   ],
+   "position": [
+    -0.7345,
+    13.1798,
+    -1.2125
+   ],
+   "size": [
+    0.356,
+    0.41,
+    0.29
+   ],
+   "rotationMatrix": [
+    [
+     0.65102,
+     -0.12053,
+     0.74943
+    ],
+    [
+     0.44852,
+     0.8576,
+     -0.2517
+    ],
+    [
+     -0.61237,
+     0.5,
+     0.61237
+    ]
+   ]
+  },
+  {
+   "name": "Crystal9",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -0.5085,
+    11.5718,
+    2.15
+   ],
+   "size": [
+    1.06,
+    1.76,
+    0.895
+   ],
+   "rotationMatrix": [
+    [
+     0.74943,
+     -0.12053,
+     0.65102
+    ],
+    [
+     -0.2517,
+     0.8576,
+     0.44852
+    ],
+    [
+     -0.61237,
+     -0.5,
+     0.61237
+    ]
+   ]
+  },
+  {
+   "name": "Crystal9Mid",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    118,
+    204,
+    255
+   ],
+   "position": [
+    -0.6621,
+    12.6653,
+    1.5125
+   ],
+   "size": [
+    0.686,
+    0.71,
+    0.576
+   ],
+   "rotationMatrix": [
+    [
+     0.74943,
+     -0.12053,
+     0.65102
+    ],
+    [
+     -0.2517,
+     0.8576,
+     0.44852
+    ],
+    [
+     -0.61237,
+     -0.5,
+     0.61237
+    ]
+   ]
+  },
+  {
+   "name": "Crystal9Tip",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    196,
+    238,
+    255
+   ],
+   "position": [
+    -0.7345,
+    13.1798,
+    1.2125
+   ],
+   "size": [
+    0.356,
+    0.41,
+    0.29
+   ],
+   "rotationMatrix": [
+    [
+     0.74943,
+     -0.12053,
+     0.65102
+    ],
+    [
+     -0.2517,
+     0.8576,
+     0.44852
+    ],
+    [
+     -0.61237,
+     -0.5,
+     0.61237
+    ]
+   ]
+  },
+  {
+   "name": "NeckStripe1",
+   "part": "Neck1",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    78,
+    206,
+    255
+   ],
+   "position": [
+    12.6453,
+    12.2849,
+    -0.0
+   ],
+   "size": [
+    3.1194,
+    0.2,
+    0.52
+   ],
+   "rotationMatrix": [
+    [
+     0.11316,
+     -0.99358,
+     0.0
+    ],
+    [
+     0.99358,
+     0.11316,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "NeckStripe2",
+   "part": "Neck1",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    78,
+    206,
+    255
+   ],
+   "position": [
+    12.6018,
+    15.4467,
+    -0.0
+   ],
+   "size": [
+    3.0014,
+    0.2,
+    0.52
+   ],
+   "rotationMatrix": [
+    [
+     0.03159,
+     -0.9995,
+     0.0
+    ],
+    [
+     0.9995,
+     0.03159,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "NeckStripe3",
+   "part": "Neck2",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    78,
+    206,
+    255
+   ],
+   "position": [
+    12.5265,
+    17.9808,
+    -0.0
+   ],
+   "size": [
+    2.3706,
+    0.2,
+    0.52
+   ],
+   "rotationMatrix": [
+    [
+     0.05872,
+     -0.99827,
+     0.0
+    ],
+    [
+     0.99827,
+     0.05872,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "NeckStripe4",
+   "part": "Neck2",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    78,
+    206,
+    255
+   ],
+   "position": [
+    12.6846,
+    19.8252,
+    -0.0
+   ],
+   "size": [
+    2.2828,
+    0.2,
+    0.52
+   ],
+   "rotationMatrix": [
+    [
+     0.24433,
+     -0.96969,
+     0.0
+    ],
+    [
+     0.96969,
+     0.24433,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "NeckStripe5",
+   "part": "Neck2",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    78,
+    206,
+    255
+   ],
+   "position": [
+    13.1674,
+    21.5979,
+    -0.0
+   ],
+   "size": [
+    2.1616,
+    0.2,
+    0.52
+   ],
+   "rotationMatrix": [
+    [
+     0.38806,
+     -0.92164,
+     0.0
+    ],
+    [
+     0.92164,
+     0.38806,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "NeckStripe6",
+   "part": "Neck2",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    78,
+    206,
+    255
+   ],
+   "position": [
+    13.7417,
+    22.7339,
+    -0.0
+   ],
+   "size": [
+    1.7134,
+    0.2,
+    0.52
+   ],
+   "rotationMatrix": [
+    [
+     0.65079,
+     -0.75926,
+     0.0
+    ],
+    [
+     0.75926,
+     0.65079,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "NeckStripe7",
+   "part": "Head",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    78,
+    206,
+    255
+   ],
+   "position": [
+    14.487,
+    23.5607,
+    -0.0
+   ],
+   "size": [
+    1.326,
+    0.2,
+    0.52
+   ],
+   "rotationMatrix": [
+    [
+     0.77487,
+     -0.63213,
+     0.0
+    ],
+    [
+     0.63213,
+     0.77487,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "EyeR",
+   "part": "Head",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    150,
+    246,
+    255
+   ],
+   "position": [
+    17.6,
+    27.12,
+    1.44
+   ],
+   "size": [
+    0.6,
+    0.44,
+    0.28
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "EyeL",
+   "part": "Head",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    150,
+    246,
+    255
+   ],
+   "position": [
+    17.6,
+    27.12,
+    -1.44
+   ],
+   "size": [
+    0.6,
+    0.44,
+    0.28
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  }
+ ],
+ "attachments": [
+  {
+   "name": "CrystalTop",
+   "part": "Body",
+   "position": [
+    -3.2187,
+    20.589,
+    -0.0
+   ],
+   "direction": [
+    -0.0523,
+    0.9986,
+    -0.0
+   ]
+  },
+  {
+   "name": "BreathFX",
+   "part": "Head",
+   "position": [
+    22.1,
+    26.0,
+    0.0
+   ],
+   "direction": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  }
+ ],
+ "lights": [
+  {
+   "name": "CrystalGlow",
+   "part": "Body",
+   "type": "PointLight",
+   "position": [
+    -2.8,
+    16.0,
+    0.0
+   ],
+   "color": [
+    120,
+    205,
+    255
+   ],
+   "range": 16,
+   "brightness": 2
+  },
+  {
+   "name": "AlcoveGlowL",
+   "part": "Wagon",
+   "type": "PointLight",
+   "position": [
+    0.0,
+    4.6,
+    -4.9
+   ],
+   "color": [
+    120,
+    205,
+    255
+   ],
+   "range": 7,
+   "brightness": 1
+  },
+  {
+   "name": "AlcoveGlowR",
+   "part": "Wagon",
+   "type": "PointLight",
+   "position": [
+    0.0,
+    4.6,
+    4.9
+   ],
+   "color": [
+    120,
+    205,
+    255
+   ],
+   "range": 7,
+   "brightness": 1
+  }
+ ]
+}
