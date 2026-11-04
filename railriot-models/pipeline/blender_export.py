@@ -79,7 +79,7 @@ def neon_mat(color):
         bsdf.inputs["Emission Color"].default_value = lin
     except KeyError:
         bsdf.inputs["Emission"].default_value = lin
-    bsdf.inputs["Emission Strength"].default_value = 1.6
+    bsdf.inputs["Emission Strength"].default_value = 1.25
     neon_mats[key] = m
     return m
 
@@ -295,7 +295,7 @@ bg.inputs["Strength"].default_value = 0.85
 
 scene.render.engine = "CYCLES"
 scene.cycles.device = "CPU"
-scene.cycles.samples = 20 if QUICK else 48
+scene.cycles.samples = 20 if QUICK else 72
 scene.cycles.use_denoising = False
 try:
     scene.cycles.denoiser = "OPENIMAGEDENOISE"
@@ -344,21 +344,21 @@ views = {
 if "head" in R:
     hc = Vector(R["head"]["center"])
     hr = R["head"]["radius"]
-    views["head_34"] = dict(dir=(1.0, 0.95, 0.35), target=hc, radius=hr, res=(1000, 1000))
-    views["head_front"] = dict(dir=(1, 0, 0.12), target=hc, radius=hr, res=(1000, 1000))
-    views["head_profile"] = dict(dir=(0, 1, 0.05), target=hc, radius=hr, res=(1000, 1000))
-    views["head_low"] = dict(dir=(1.0, 0.8, -0.35), target=hc, radius=hr, res=(1000, 1000))
+    views["head_34"] = dict(dir=(1.0, 0.95, 0.35), target=hc, radius=hr, res=(1000, 1000), lens=110)
+    views["head_front"] = dict(dir=(1, 0, 0.12), target=hc, radius=hr, res=(1000, 1000), lens=110)
+    views["head_profile"] = dict(dir=(0, 1, 0.05), target=hc, radius=hr, res=(1000, 1000), lens=110)
+    views["head_low"] = dict(dir=(1.0, 0.8, -0.35), target=hc, radius=hr, res=(1000, 1000), lens=110)
 
 if QUICK:
     for v in views.values():
         v["res"] = (int(v["res"][0] * 0.62), int(v["res"][1] * 0.62))
 
 os.makedirs(os.path.join(OUT, "renders"), exist_ok=True)
-for vname in (VIEWS or ["34", "front", "profile", "head_34", "head_front", "head_profile"]):
+for vname in (VIEWS or ["34", "front", "profile", "back34", "head_34", "head_front", "head_profile", "head_low"]):
     if vname not in views:
         continue
     v = views[vname]
-    frame(v["dir"], v["target"], v["radius"], v["res"])
+    frame(v["dir"], v["target"], v["radius"], v["res"], lens=v.get("lens", 50))
     scene.render.filepath = os.path.join(OUT, "renders", f"{NAME}_{vname}.png")
     bpy.ops.render.render(write_still=True)
     log("render", vname)

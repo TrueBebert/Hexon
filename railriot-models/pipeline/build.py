@@ -235,6 +235,12 @@ def build(module_name, version, render=True, views=None, quick=False):
                        if groups[pdef[cc["part"]].get("group", cc["part"])] == g]
             gl = np.where(np.isin(chunk_label, members), chunk_label, 0)
             D = ndimage.binary_dilation(gl > 0, structure=np.ones((3, 3, 3), bool))
+            # keep the hull out of eye sockets and their line of sight (it would cover them in black)
+            for zone in getattr(spec, "NO_OUTLINE", []):
+                r = vm._mask(zone, False)
+                if r is not None:
+                    sl, m = r
+                    D[sl] &= ~(m & (gl[sl] == 0))
             owner = np.where(gl > 0, gl, ndimage.grey_dilation(gl, size=(3, 3, 3)))
             owner[~D] = 0
             group_shell[g] = (D, owner, surface_touch(D))
@@ -293,16 +299,17 @@ def build(module_name, version, render=True, views=None, quick=False):
     neon = []
     for n in getattr(spec, "NEON", []):
         R = np.asarray(n.get("R", np.eye(3)), float)
-        size = np.asarray(n["size"], float) - 0.04  # no coplanar faces with voxels (z-fighting)
+        nsize = np.asarray(n["size"], float) - 0.04  # no coplanar faces with voxels (z-fighting)
         neon.append(dict(name=n["name"], part=n["part"], shape=n.get("shape", "Block"),
-                         center=[float(x) for x in n["center"]], size=size.tolist(), R=R.tolist(),
+                         center=[float(x) for x in n["center"]], size=nsize.tolist(), R=R.tolist(),
                          color=list(n["color"])))
 
     tri_total = sum(m["triangles"] for m in mesh_meta)
     tri_neon = sum(12 if n["shape"] == "Block" else 64 for n in neon)
     info = dict(name=name, version=version, small=vm.s, big=vm.b, bbox=[lo.tolist(), hi.tolist()],
                 size=size.tolist(), parts=parts, meshes=mesh_meta, pages=page_files, neon=neon,
-                attachments=getattr(spec, "ATTACHMENTS", []), triangles_mesh=tri_total,
+                attachments=getattr(spec, "ATTACHMENTS", []), lights=getattr(spec, "LIGHTS", []),
+                triangles_mesh=tri_total,
                 triangles_neon=tri_neon, floating=floating, symmetry=sym, components=comps,
                 render=getattr(spec, "RENDER", {}), atlas=ATLAS)
     with open(os.path.join(outdir, "build_info.json"), "w") as f:
@@ -353,7 +360,11 @@ def write_manifest(info, outdir):
                          rotationMatrix=np.round(R, 5).tolist()))
     atts = [dict(name=a["name"], part=a["part"], position=to_roblox(a["position"]),
                  direction=to_roblox(a.get("direction", (1, 0, 0)))) for a in info["attachments"]]
+    lights = [dict(name=l["name"], part=l["part"], type="PointLight", position=to_roblox(l["position"]),
+                   color=list(l["color"]), range=l.get("range", 8), brightness=l.get("brightness", 1))
+              for l in info.get("lights", [])]
     lo, hi = info["bbox"]
+    info = dict(info, size=(np.asarray(hi) - np.asarray(lo)).tolist())
     man = dict(
         name=info["name"], version=info["version"], units="studs",
         axes="Roblox: X = avant du train, Y = haut, Z = -largeur (glTF Y-up)",
@@ -362,7 +373,7 @@ def write_manifest(info, outdir):
         size=[round(info["size"][0], 3), round(info["size"][2], 3), round(info["size"][1], 3)],
         triangles=dict(meshes=info["triangles_mesh"], neon=info["triangles_neon"],
                        total=info["triangles_mesh"] + info["triangles_neon"]),
-        textures=info["pages"], parts=parts, neon=neon, attachments=atts,
+        textures=info["pages"], parts=parts, neon=neon, attachments=atts, lights=lights,
     )
     with open(os.path.join(outdir, f"{info['name']}_manifest.json"), "w") as f:
         json.dump(man, f, indent=1)

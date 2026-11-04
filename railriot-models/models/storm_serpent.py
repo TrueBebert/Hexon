@@ -65,7 +65,14 @@ PARTS = [
 ]
 
 NEON = []
+LIGHTS = [  # a few PointLights suggested for the game (not geometry)
+    dict(name="CrystalGlow", part="Body", position=(-2.8, 0, 16.0), color=(120, 205, 255), range=16, brightness=2),
+    dict(name="AlcoveGlowL", part="Wagon", position=(0, 4.9, 4.6), color=(120, 205, 255), range=7, brightness=1),
+    dict(name="AlcoveGlowR", part="Wagon", position=(0, -4.9, 4.6), color=(120, 205, 255), range=7, brightness=1),
+]
 DROP_DOWN = dict(parts=["Wagon"], below=2.5)
+# no outline hull inside the eye sockets and in front of them (it would hide the eyes)
+NO_OUTLINE = [sym(Box((17.1, 1.12, 26.88), (18.25, 2.3, 27.52))), sym(Box((18.24, 1.12, 26.88), (22.6, 2.3, 27.52)))]
 ATTACHMENTS = []
 RENDER = dict(head=dict(center=(17.8, 0, 26.9), radius=4.4), rail_gauge=8.64)
 
