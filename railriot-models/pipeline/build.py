@@ -19,7 +19,7 @@ from . import texture as tx
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ATLAS = 1024
-CAP = int(ATLAS * ATLAS * 0.87)
+CAP = int(ATLAS * ATLAS * 0.93)
 MAX_TRIS = 19000  # per mesh, outline included (Roblox limit 20 000)
 
 
@@ -166,7 +166,7 @@ def build(module_name, version, render=True, views=None, quick=False):
                         continue
                     sizes.append(tx.quad_px_size(q))
                     refs.append((ci, qi))
-            pos = tx.shelf_pack(sizes, ATLAS, ATLAS)
+            pos = tx.skyline_pack(sizes, ATLAS, ATLAS)
             if pos is None:
                 ok = False
                 break
@@ -386,6 +386,8 @@ def run_blender(outdir, views=None, quick=False):
         args += ["--views", ",".join(views)]
     if quick:
         args += ["--quick"]
+    if os.environ.get("RR_SAMPLES"):
+        args += ["--samples", os.environ["RR_SAMPLES"]]
     t0 = time.time()
     r = subprocess.run(args, capture_output=True, text=True)
     lines = [l for l in r.stdout.splitlines() if l.startswith("[bl]") or "Error" in l or "error" in l]

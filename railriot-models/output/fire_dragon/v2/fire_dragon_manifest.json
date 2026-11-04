@@ -1,0 +1,1508 @@
+{
+ "name": "fire_dragon",
+ "version": "v2",
+ "units": "studs",
+ "axes": "Roblox: X = avant du train, Y = haut, Z = -largeur (glTF Y-up)",
+ "cubeSize": {
+  "small": 0.16,
+  "big": 0.48
+ },
+ "groundHeight": 0.0,
+ "size": [
+  44.32,
+  21.12,
+  10.56
+ ],
+ "triangles": {
+  "meshes": 24468,
+  "neon": 396,
+  "total": 24864
+ },
+ "textures": [
+  {
+   "file": "fire_dragon_atlas1.png",
+   "bytes": 588293
+  },
+  {
+   "file": "fire_dragon_atlas2.png",
+   "bytes": 407180
+  },
+  {
+   "file": "fire_dragon_atlas3.png",
+   "bytes": 300949
+  }
+ ],
+ "parts": [
+  {
+   "name": "Wagon",
+   "parent": null,
+   "pivot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "meshes": [
+    "Wagon",
+    "Wagon_2"
+   ],
+   "atlas": [
+    "fire_dragon_atlas3.png",
+    "fire_dragon_atlas2.png"
+   ],
+   "triangles": 7366
+  },
+  {
+   "name": "Body",
+   "parent": "Wagon",
+   "pivot": [
+    0.0,
+    5.76,
+    0.0
+   ],
+   "meshes": [
+    "Body"
+   ],
+   "atlas": [
+    "fire_dragon_atlas1.png"
+   ],
+   "triangles": 6202
+  },
+  {
+   "name": "Lava",
+   "parent": "Body",
+   "pivot": [
+    -5.5,
+    12.0,
+    0.0
+   ],
+   "meshes": [
+    "Lava"
+   ],
+   "atlas": [
+    "fire_dragon_atlas2.png"
+   ],
+   "triangles": 452
+  },
+  {
+   "name": "Tail1",
+   "parent": "Body",
+   "pivot": [
+    -12.96,
+    13.6,
+    0.0
+   ],
+   "meshes": [
+    "Tail1"
+   ],
+   "atlas": [
+    "fire_dragon_atlas3.png"
+   ],
+   "triangles": 990
+  },
+  {
+   "name": "Tail2",
+   "parent": "Tail1",
+   "pivot": [
+    -16.32,
+    14.3,
+    0.0
+   ],
+   "meshes": [
+    "Tail2"
+   ],
+   "atlas": [
+    "fire_dragon_atlas3.png"
+   ],
+   "triangles": 758
+  },
+  {
+   "name": "Tail3",
+   "parent": "Tail2",
+   "pivot": [
+    -19.2,
+    12.8,
+    0.0
+   ],
+   "meshes": [
+    "Tail3"
+   ],
+   "atlas": [
+    "fire_dragon_atlas1.png"
+   ],
+   "triangles": 2024
+  },
+  {
+   "name": "Neck",
+   "parent": "Body",
+   "pivot": [
+    7.2,
+    12.5,
+    0.0
+   ],
+   "meshes": [
+    "Neck"
+   ],
+   "atlas": [
+    "fire_dragon_atlas2.png"
+   ],
+   "triangles": 966
+  },
+  {
+   "name": "Head",
+   "parent": "Neck",
+   "pivot": [
+    10.56,
+    14.6,
+    0.0
+   ],
+   "meshes": [
+    "Head"
+   ],
+   "atlas": [
+    "fire_dragon_atlas2.png"
+   ],
+   "triangles": 4390
+  },
+  {
+   "name": "Jaw",
+   "parent": "Head",
+   "pivot": [
+    12.0,
+    13.6,
+    0.0
+   ],
+   "meshes": [
+    "Jaw"
+   ],
+   "atlas": [
+    "fire_dragon_atlas1.png"
+   ],
+   "triangles": 1320
+  }
+ ],
+ "neon": [
+  {
+   "name": "CabLight1",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    16.4,
+    7.2,
+    1.6
+   ],
+   "size": [
+    0.12,
+    0.6,
+    1.08
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "CabLight2",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    16.4,
+    7.2,
+    -0.0
+   ],
+   "size": [
+    0.12,
+    0.6,
+    1.08
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "CabLight3",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    16.4,
+    7.2,
+    -1.6
+   ],
+   "size": [
+    0.12,
+    0.6,
+    1.08
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "CabSideR1",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    11.68,
+    7.2,
+    3.76
+   ],
+   "size": [
+    0.92,
+    0.6,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "CabSideR2",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    13.12,
+    7.2,
+    3.76
+   ],
+   "size": [
+    0.92,
+    0.6,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "CabSideR3",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    14.56,
+    7.2,
+    3.76
+   ],
+   "size": [
+    0.92,
+    0.6,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "CabSideL1",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    11.68,
+    7.2,
+    -3.76
+   ],
+   "size": [
+    0.92,
+    0.6,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "CabSideL2",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    13.12,
+    7.2,
+    -3.76
+   ],
+   "size": [
+    0.92,
+    0.6,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "CabSideL3",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    14.56,
+    7.2,
+    -3.76
+   ],
+   "size": [
+    0.92,
+    0.6,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "BumperLight1",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    18.8,
+    5.28,
+    1.2
+   ],
+   "size": [
+    0.12,
+    0.44,
+    1.24
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "BumperLight2",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    18.8,
+    5.28,
+    -1.2
+   ],
+   "size": [
+    0.12,
+    0.44,
+    1.24
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "SideLightR1",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    -9.6,
+    3.84,
+    4.72
+   ],
+   "size": [
+    0.92,
+    0.44,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "SideLightR2",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    -8.16,
+    3.84,
+    4.72
+   ],
+   "size": [
+    0.92,
+    0.44,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "SideLightFR1",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    5.28,
+    2.88,
+    4.72
+   ],
+   "size": [
+    0.92,
+    0.44,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "SideLightFR2",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    6.72,
+    2.88,
+    4.72
+   ],
+   "size": [
+    0.92,
+    0.44,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "SideLightL1",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    -9.6,
+    3.84,
+    -4.72
+   ],
+   "size": [
+    0.92,
+    0.44,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "SideLightL2",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    -8.16,
+    3.84,
+    -4.72
+   ],
+   "size": [
+    0.92,
+    0.44,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "SideLightFL1",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    5.28,
+    2.88,
+    -4.72
+   ],
+   "size": [
+    0.92,
+    0.44,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "SideLightFL2",
+   "part": "Wagon",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "position": [
+    6.72,
+    2.88,
+    -4.72
+   ],
+   "size": [
+    0.92,
+    0.44,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "VentR",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    118,
+    30
+   ],
+   "position": [
+    2.88,
+    11.76,
+    3.24
+   ],
+   "size": [
+    1.24,
+    1.08,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "VentL",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    118,
+    30
+   ],
+   "position": [
+    2.88,
+    11.76,
+    -3.24
+   ],
+   "size": [
+    1.24,
+    1.08,
+    0.12
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "PipeR1",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    140,
+    36
+   ],
+   "position": [
+    2.4,
+    13.4,
+    3.6
+   ],
+   "size": [
+    2.0431,
+    0.48,
+    0.48
+   ],
+   "rotationMatrix": [
+    [
+     0.99805,
+     0.0,
+     -0.06238
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.06238,
+     0.0,
+     0.99805
+    ]
+   ]
+  },
+  {
+   "name": "PipeR2",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    140,
+    36
+   ],
+   "position": [
+    3.9,
+    12.3,
+    3.7
+   ],
+   "size": [
+    3.0496,
+    0.48,
+    0.48
+   ],
+   "rotationMatrix": [
+    [
+     0.53648,
+     0.8409,
+     -0.07125
+    ],
+    [
+     -0.84304,
+     0.53785,
+     0.0
+    ],
+    [
+     0.03832,
+     0.06006,
+     0.99746
+    ]
+   ]
+  },
+  {
+   "name": "PipeR3",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    140,
+    36
+   ],
+   "position": [
+    5.5,
+    11.0,
+    3.75
+   ],
+   "size": [
+    2.2839,
+    0.48,
+    0.48
+   ],
+   "rotationMatrix": [
+    [
+     0.97619,
+     0.21693,
+     0.0
+    ],
+    [
+     -0.21693,
+     0.97619,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "PipeR4",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    140,
+    36
+   ],
+   "position": [
+    7.0,
+    9.7,
+    3.75
+   ],
+   "size": [
+    2.946,
+    0.48,
+    0.48
+   ],
+   "rotationMatrix": [
+    [
+     0.47885,
+     0.8779,
+     0.0
+    ],
+    [
+     -0.8779,
+     0.47885,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "PipeR5",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    140,
+    36
+   ],
+   "position": [
+    8.9,
+    8.5,
+    3.75
+   ],
+   "size": [
+    3.0477,
+    0.48,
+    0.48
+   ],
+   "rotationMatrix": [
+    [
+     0.99705,
+     0.0767,
+     0.0
+    ],
+    [
+     -0.0767,
+     0.99705,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "PipeL1",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    140,
+    36
+   ],
+   "position": [
+    2.4,
+    13.4,
+    -3.6
+   ],
+   "size": [
+    2.0431,
+    0.48,
+    0.48
+   ],
+   "rotationMatrix": [
+    [
+     0.99805,
+     0.0,
+     0.06238
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     -0.06238,
+     0.0,
+     0.99805
+    ]
+   ]
+  },
+  {
+   "name": "PipeL2",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    140,
+    36
+   ],
+   "position": [
+    3.9,
+    12.3,
+    -3.7
+   ],
+   "size": [
+    3.0496,
+    0.48,
+    0.48
+   ],
+   "rotationMatrix": [
+    [
+     0.53648,
+     0.8409,
+     0.07125
+    ],
+    [
+     -0.84304,
+     0.53785,
+     0.0
+    ],
+    [
+     -0.03832,
+     -0.06006,
+     0.99746
+    ]
+   ]
+  },
+  {
+   "name": "PipeL3",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    140,
+    36
+   ],
+   "position": [
+    5.5,
+    11.0,
+    -3.75
+   ],
+   "size": [
+    2.2839,
+    0.48,
+    0.48
+   ],
+   "rotationMatrix": [
+    [
+     0.97619,
+     0.21693,
+     0.0
+    ],
+    [
+     -0.21693,
+     0.97619,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "PipeL4",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    140,
+    36
+   ],
+   "position": [
+    7.0,
+    9.7,
+    -3.75
+   ],
+   "size": [
+    2.946,
+    0.48,
+    0.48
+   ],
+   "rotationMatrix": [
+    [
+     0.47885,
+     0.8779,
+     0.0
+    ],
+    [
+     -0.8779,
+     0.47885,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "PipeL5",
+   "part": "Body",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    140,
+    36
+   ],
+   "position": [
+    8.9,
+    8.5,
+    -3.75
+   ],
+   "size": [
+    3.0477,
+    0.48,
+    0.48
+   ],
+   "rotationMatrix": [
+    [
+     0.99705,
+     0.0767,
+     0.0
+    ],
+    [
+     -0.0767,
+     0.99705,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "EyeR",
+   "part": "Head",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    150,
+    36
+   ],
+   "position": [
+    15.12,
+    16.0,
+    1.92
+   ],
+   "size": [
+    0.76,
+    0.6,
+    0.28
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  },
+  {
+   "name": "EyeL",
+   "part": "Head",
+   "shape": "Block",
+   "material": "Neon",
+   "color": [
+    255,
+    150,
+    36
+   ],
+   "position": [
+    15.12,
+    16.0,
+    -1.92
+   ],
+   "size": [
+    0.76,
+    0.6,
+    0.28
+   ],
+   "rotationMatrix": [
+    [
+     1.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ]
+  }
+ ],
+ "attachments": [
+  {
+   "name": "FireBreath",
+   "part": "Head",
+   "position": [
+    20.6,
+    13.0,
+    0.0
+   ],
+   "direction": [
+    1.0,
+    -0.15,
+    0.0
+   ]
+  }
+ ],
+ "lights": [
+  {
+   "name": "CabGlow",
+   "part": "Wagon",
+   "type": "PointLight",
+   "position": [
+    16.8,
+    7.2,
+    0.0
+   ],
+   "color": [
+    255,
+    196,
+    72
+   ],
+   "range": 10,
+   "brightness": 1.5
+  },
+  {
+   "name": "LavaGlow",
+   "part": "Lava",
+   "type": "PointLight",
+   "position": [
+    -5.5,
+    12.0,
+    0.0
+   ],
+   "color": [
+    255,
+    130,
+    40
+   ],
+   "range": 16,
+   "brightness": 2
+  },
+  {
+   "name": "MouthGlow",
+   "part": "Head",
+   "type": "PointLight",
+   "position": [
+    18.6,
+    13.0,
+    0.0
+   ],
+   "color": [
+    255,
+    150,
+    50
+   ],
+   "range": 8,
+   "brightness": 1.5
+  }
+ ]
+}

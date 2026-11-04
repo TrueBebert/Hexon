@@ -52,9 +52,9 @@ PARTS = [
     dict(name="Wagon", parent=None, pivot=(0, 0, 0), group="static", outline=0.16),
     dict(name="Body", parent="Wagon", pivot=(0, 0, ZD), group="static", outline=0.2),
     dict(name="Lava", parent="Body", pivot=(-5.5, 0, 12.0), group="static", outline=0.2),
-    dict(name="Tail1", parent="Body", pivot=(-12.96, 0, 13.0), outline=0.2),
-    dict(name="Tail2", parent="Tail1", pivot=(-16.32, 0, 12.0), outline=0.2),
-    dict(name="Tail3", parent="Tail2", pivot=(-19.2, 0, 10.4), outline=0.2),
+    dict(name="Tail1", parent="Body", pivot=(-12.96, 0, 13.6), outline=0.2),
+    dict(name="Tail2", parent="Tail1", pivot=(-16.32, 0, 14.3), outline=0.2),
+    dict(name="Tail3", parent="Tail2", pivot=(-19.2, 0, 12.8), outline=0.2),
     dict(name="Neck", parent="Body", pivot=(7.2, 0, 12.5), outline=0.2),
     dict(name="Head", parent="Neck", pivot=(10.56, 0, 14.6), outline=0.2),
     dict(name="Jaw", parent="Head", pivot=(12.0, 0, 13.6), outline=0.2),
@@ -64,10 +64,10 @@ NEON = []
 ATTACHMENTS = []
 MIN_KEEP = 64
 # no outline hull inside the eye sockets and in front of them (it would hide the eyes)
-NO_OUTLINE = [sym(Box((14.0, 1.44, 15.36), (15.37, 2.80, 16.16))), sym(Box((15.36, 1.44, 15.36), (22.6, 2.80, 16.16)))]
+NO_OUTLINE = [sym(Box((14.2, 1.44, 15.52), (15.85, 2.80, 16.48))), sym(Box((15.84, 1.44, 15.52), (22.6, 2.80, 16.48)))]
 LIGHTS = []
 DROP_DOWN = dict(parts=["Wagon"], below=2.5)
-RENDER = dict(head=dict(center=(16.0, 0, 14.6), radius=5.6), rail_gauge=7.68)
+RENDER = dict(head=dict(center=(15.6, 0, 15.0), radius=5.4), rail_gauge=7.68)
 
 C_LIGHT = (255, 196, 72)
 C_EYE = (255, 150, 36)
@@ -187,8 +187,10 @@ def wagon(vm):
         neon(f"CabLight{i + 1}", W, (16.40, y, 7.2), (0.16, 1.12, 0.64))
     vm.cut(Box((16.16, -2.32, 6.80), (16.33, 2.32, 7.60)))
     for side in (-1, 1):
-        for i, x in enumerate((12.0, 13.6)):
-            neon(f"CabSide{'L' if side > 0 else 'R'}{i + 1}", W, (x, side * 3.92, 7.2), (1.12, 0.16, 0.64))
+        for i, x in enumerate((11.68, 13.12, 14.56)):
+            neon(f"CabSide{'L' if side > 0 else 'R'}{i + 1}", W, (x, side * 3.76, 7.2), (0.96, 0.16, 0.64))
+        vm.cut(Box((11.2, side * 3.68 - 0.17, 6.88), (15.04, side * 3.68 + 0.17, 7.52)) if False else
+               Box((11.2, min(side * 3.68, side * 3.85), 6.88), (15.04, max(side * 3.68, side * 3.85), 7.52)))
     # front bumper with bone tusks (cow-catcher) and horns
     vm.add(Box((16.80, -4.32, Z0), (19.20, 4.32, 4.80)), "metal_dark", W)
     vm.add(Box((16.80, -3.36, 4.80), (18.72, 3.36, ZD)), "metal", W)
@@ -218,12 +220,26 @@ def wagon(vm):
 
     def claws(X, Y, Z):
         out = np.zeros(X.shape, bool)
-        for k in range(3):
-            xo = -2.9 + k * 0.62
-            d = (X - xo) - (Z - 3.0) * 0.55
-            out |= (np.abs(d) < 0.11) & (Z > 2.95 + k * 0.1) & (Z < 4.5 - k * 0.12)
+        for k in range(4):
+            xo = -3.4 + k * 0.72
+            d = (X - xo) - (Z - 2.9) * 0.62
+            out |= (np.abs(d) < 0.14) & (Z > 2.9 + k * 0.08) & (Z < 4.64 - k * 0.1)
         return out
-    vm.paint(sym(Box((-4.2, WY - 0.2, 2.8), (-0.6, WY, 4.6))), "claw", parts=[W], where=claws)
+    # claw marks gouged one small cube deep into the panel, glowing at the bottom
+    from pipeline.vox import Func
+    for side in (-1, 1):
+        ya, yb = sorted((side * (WY - 2 * S), side * (WY - S)))
+        gouge = Func(lambda P: claws(P[:, 0], P[:, 1], P[:, 2]), (-4.6, ya, 2.8), (0.2, yb, 4.7))
+        vm.cut(gouge)
+        ya2, yb2 = sorted((side * (WY - 3 * S), side * (WY - 2 * S)))
+        vm.paint(Box((-4.6, ya2, 2.8), (0.2, yb2, 4.7)), "claw", parts=[W], where=claws)
+    # ladder on the chassis side, by the rear railing
+    for side in (-1, 1):
+        ya, yb = sorted((side * WY, side * (WY + S)))
+        for x in (-12.48, -11.68):
+            vm.add(Box((x, ya, Z0 + 0.32), (x + 0.16, yb, ZD + 0.16)), "rail", W, big=False)
+        for z in np.arange(Z0 + 0.64, ZD, 0.48):
+            vm.add(Box((-12.32, ya, z), (-11.68, yb, z + 0.16)), "rail", W, big=False)
     # railings, crates, banners
     for side in (-1, 1):
         railing(vm, -19.2, -13.0, side * (WY - 0.24))
@@ -293,8 +309,8 @@ def body(vm):
     vm.cut(sym(Box((2.24, 3.20, 11.20), (3.52, 3.37, 12.32))))
     for side in (-1, 1):
         neon(f"Vent{'L' if side > 0 else 'R'}", P, (2.88, side * 3.24, 11.76), (1.28, 0.16, 1.12), color=C_VENT)
-    # glowing pipes from the tank collar down to the cab
-    pipe = [(1.6, 3.5, 13.4), (3.2, 3.6, 13.4), (4.6, 3.7, 11.2), (6.4, 3.7, 10.8), (7.6, 3.7, 8.6), (10.2, 3.7, 8.4)]
+    # glowing pipes from the tank collar down to the cab, held by dark brackets
+    pipe = [(1.6, 3.55, 13.4), (3.2, 3.65, 13.4), (4.6, 3.75, 11.2), (6.4, 3.75, 10.8), (7.6, 3.75, 8.6), (10.2, 3.75, 8.4)]
     for side in (-1, 1):
         for j in range(len(pipe) - 1):
             a, b = np.array(pipe[j]), np.array(pipe[j + 1])
@@ -308,97 +324,115 @@ def body(vm):
             yv /= np.linalg.norm(yv)
             zv = np.cross(t, yv)
             R = np.column_stack([t, yv, zv])
-            neon(f"Pipe{'L' if side > 0 else 'R'}{j + 1}", P, (a + b) / 2, (L_ + 0.3, 0.36, 0.36), R=R, color=C_PIPE)
+            neon(f"Pipe{'L' if side > 0 else 'R'}{j + 1}", P, (a + b) / 2, (L_ + 0.48, 0.52, 0.52), R=R, color=C_PIPE)
+        for (x, z) in ((3.2, 13.4), (4.6, 11.2), (10.0, 8.4)):
+            ya, yb = sorted((side * 2.4, side * 4.16))
+            vm.add(Box((x - 0.32, ya, z - 0.32), (x + 0.32, yb, z + 0.32)), "metal_dark", P, big=False)
     LIGHTS.append(dict(name="LavaGlow", part=L, position=(cx, 0, cz), color=(255, 130, 40), range=16, brightness=2))
-    # tail: curves down behind the wagon, spikes on top (red then bone near the tip)
-    tail = [(-12.4, 0, 13.0), (-15.0, 0, 12.6), (-17.4, 0, 11.4), (-19.4, 0, 10.0), (-21.0, 0, 8.9), (-21.9, 0, 8.4)]
-    tr = [2.0, 1.65, 1.3, 0.95, 0.6, 0.35]
+    # tail: rises above the crates then sweeps down, spikes on top (dark red, then bone near the tip)
+    tail = [(-12.4, 0, 13.4), (-15.0, 0, 14.4), (-17.6, 0, 14.0), (-19.6, 0, 12.4), (-21.0, 0, 10.6), (-21.9, 0, 9.4)]
+    tr = [2.0, 1.7, 1.35, 1.0, 0.65, 0.38]
     vm.add(Scale(Sweep(tail[:4], tr[:4]), (0, 0, 0), (1, 0.85, 1)), "red", "Tail1", big=True)
     vm.add(Scale(Sweep(tail[3:], tr[3:]), (0, 0, 0), (1, 0.85, 1)), "red", "Tail1", big=False)
-    vm.paint(Box((-23, -2, 6), (-12, 2, 11.6)), "red_dark", parts=["Tail1"],
-             where=lambda X, Y, Z: Z < 13.0 - 0.32 * (-12.4 - X) - 0.9)
+    tx_, tz_ = [p_[0] for p_ in tail][::-1], [p_[2] for p_ in tail][::-1]
+    trr = tr[::-1]
+    vm.paint(Box((-23, -2.2, 6), (-11.5, 2.2, 17)), "red_dark", parts=["Tail1"],
+             where=lambda X, Y, Z: Z < np.interp(X, tx_, tz_) - 0.35 * np.interp(X, tx_, trr))
     vm.setpart(Box((-30, -10, 0), (-16.32, 10, 40)), "Tail2", parts=["Tail1"])
     vm.setpart(Box((-30, -10, 0), (-19.2, 10, 40)), "Tail3", parts=["Tail2"])
-    for (x, z, h, hw, part, m) in ((-13.8, 14.2, 2.2, 0.62, "Tail1", "red_dark"), (-15.6, 13.7, 1.9, 0.55, "Tail1", "red_dark"),
-                                   (-17.4, 12.4, 1.6, 0.48, "Tail2", "bone"), (-19.0, 11.1, 1.3, 0.40, "Tail3", "bone"),
-                                   (-20.4, 9.9, 1.0, 0.34, "Tail3", "bone")):
-        poly = [(-hw, 0), (hw, 0), (0.0, 0.6 * h), (-hw * 1.1, h)]
-        vm.add(Plate((x, 0, z - 0.3), (1, 0, 0), (0, 0, 1), poly, 0.48), m, part, big=False)
+    for (x, h, hw, part, m) in ((-13.4, 2.3, 0.66, "Tail1", "red_dark"), (-14.9, 2.1, 0.6, "Tail1", "red_dark"),
+                                (-16.6, 1.9, 0.55, "Tail2", "red_dark"), (-18.0, 1.6, 0.5, "Tail2", "bone"),
+                                (-19.4, 1.35, 0.44, "Tail3", "bone"), (-20.5, 1.1, 0.38, "Tail3", "bone"),
+                                (-21.4, 0.8, 0.3, "Tail3", "bone")):
+        ztop = np.interp(x, tx_, tz_) + 0.8 * np.interp(x, tx_, trr) - 0.25
+        poly = [(-hw, 0), (hw, 0), (0.0, 0.6 * h), (-hw * 1.2, h)]
+        vm.add(Plate((x, 0, ztop), (1, 0, 0), (0, 0, 1), poly, 0.48), m, part, big=False)
+
+
+def tooth(vm, x0, ya, yb, zedge, rows, part, down=True):
+    """Triangular tooth: one row of small cubes per step, widths in cells (odd), narrowing to the tip."""
+    x0 = math.floor(x0 / S + 0.5) * S
+    xc = x0 + 1.5 * S
+    for i, w in enumerate(rows):
+        z = zedge - (i + 1) * S if down else zedge + i * S
+        vm.add(Box((xc - w * S / 2, ya, z), (xc + w * S / 2, yb, z + S)), "tooth", part, big=False)
+
+
+JAW_TOP_X = [11.6, 14.0, 16.4, 18.6, 19.6]
+JAW_TOP_Z = [13.76, 13.36, 12.72, 12.0, 11.68]
 
 
 def neck_head(vm):
     N, H, J = "Neck", "Head", "Jaw"
-    # neck from the chest up to the back of the head
-    neck = [(5.6, 0, 12.4), (7.6, 0, 13.4), (9.6, 0, 14.4), (11.4, 0, 15.2)]
-    vm.add(Scale(Sweep(neck, [2.7, 2.45, 2.3, 2.2]), (0, 0, 0), (1, 0.88, 1)), "red", N)
+    # neck from the chest up to the back of the head, pale throat underneath
+    neck = [(5.6, 0, 12.4), (7.6, 0, 13.6), (9.6, 0, 14.6), (11.4, 0, 15.4)]
+    vm.add(Scale(Sweep(neck, [2.7, 2.5, 2.35, 2.25]), (0, 0, 0), (1, 0.88, 1)), "red", N)
     vm.setpart(Box((-30, -10, 0), (7.2, 10, 40)), "Body", parts=[N])
-    vm.paint(Box((5, -3, 9), (12, 3, 13.4)), "bone", parts=[N, "Body"], only=["red"],
-             where=lambda X, Y, Z: Z < 11.2 + 0.45 * (X - 5.0))          # pale throat
-    for (x, z, h, hw) in ((7.6, 15.2, 2.1, 0.6), (9.4, 16.0, 1.8, 0.55)):
-        poly = [(-hw, 0), (hw, 0), (0.0, 0.6 * h), (-hw * 1.1, h)]
+    vm.paint(Box((5, -3, 9), (12.5, 3, 15)), "bone", parts=[N], only=["red"],
+             where=lambda X, Y, Z: Z < 12.4 + 0.517 * (X - 5.6) - 1.25)
+    for (x, z, h, hw) in ((7.8, 15.6, 2.1, 0.62), (9.6, 16.4, 1.9, 0.58)):
+        poly = [(-hw, 0), (hw, 0), (0.0, 0.6 * h), (-hw * 1.15, h)]
         vm.add(Plate((x, 0, z), (1, 0, 0), (0, 0, 1), poly, 0.48), "char", N, big=False)
-    # ---- head: skull (big cubes), snout sculpted in small cubes, open jaw
+    # ---- head: big skull (big cubes), short tall snout sculpted in small cubes, open jaw
     vm.setpart(Box((10.56, -10, 0), (30, 10, 40)), H, parts=[N])
-    skull = Box((10.56, -2.40, 13.92), (15.36, 2.40, 17.76)) & Ellipsoid((13.0, 0, 15.6), (3.5, 2.9, 2.9))
+    skull = Box((10.56, -2.40, 13.92), (15.84, 2.40, 17.76)) & Ellipsoid((13.2, 0, 15.8), (3.7, 2.9, 2.95))
     vm.add(skull, "red", H)
     o, u, v = (0, 0, 0), (1, 0, 0), (0, 0, 1)
-    vm.add(Plate(o, u, v, [(15.2, 14.08), (17.44, 14.08), (17.44, 16.96), (15.2, 17.28)], 3.52), "red", H, big=False)
-    vm.add(Plate(o, u, v, [(17.28, 14.08), (19.52, 14.08), (19.52, 16.48), (17.28, 16.96)], 3.20), "red", H, big=False)
-    vm.add(Plate(o, u, v, [(19.36, 14.08), (21.28, 14.08), (21.28, 15.68), (20.8, 16.16), (19.36, 16.48)], 2.88),
+    # snout slopes down from the brow to the nose
+    vm.add(Plate(o, u, v, [(15.68, 14.08), (17.76, 14.08), (17.76, 16.96), (15.68, 17.44)], 3.52), "red", H, big=False)
+    vm.add(Plate(o, u, v, [(17.6, 14.08), (19.52, 14.08), (19.52, 16.32), (17.6, 16.96)], 3.20), "red", H, big=False)
+    vm.add(Plate(o, u, v, [(19.36, 14.08), (20.80, 14.08), (20.80, 15.52), (20.48, 15.84), (19.36, 16.32)], 2.88),
            "red", H, big=False)
-    vm.paint(Box((15.0, -0.7, 16.0), (21.5, 0.7, 17.4)), "red_dark", parts=[H])      # nose ridge
-    vm.cut(sym(Box((20.48, 0.48, 15.84), (20.96, 0.96, 16.17))))                     # nostrils
-    vm.paint(sym(Box((20.3, 0.3, 15.6), (21.1, 1.1, 16.2))), "char", parts=[H], only=["red", "red_dark"],
-             where=lambda X, Y, Z: (np.abs(Y) > 0.32) & (np.abs(Y) < 1.12))
-    # palate (dark mouth) under the upper jaw + teeth hanging down
-    vm.paint(Box((13.4, -1.5, 13.9), (21.4, 1.5, 14.24)), "mouth", parts=[H])
-    hw_up = lambda x: 1.76 if x < 17.36 else (1.6 if x < 19.44 else 1.44)
-    upper = [(15.52, 0.32), (16.32, 0.48), (17.12, 0.32), (17.92, 0.64), (18.88, 0.32), (19.68, 0.48), (20.48, 0.80)]
-    for x, L_ in upper:
-        hw = hw_up(x)
-        w_ = 0.48 if L_ >= 0.64 else 0.32
+    vm.paint(Box((15.5, -0.66, 15.9), (21.0, 0.66, 18.0)), "red_dark", parts=[H],
+             where=lambda X, Y, Z: Z > 17.44 - 0.33 * (X - 15.68) - 0.4)                       # nose ridge
+    vm.cut(sym(Box((20.16, 0.32, 15.52), (20.48, 0.64, 15.85))))                               # nostrils
+    vm.paint(sym(Box((20.0, 0.16, 15.3), (20.7, 0.8, 16.0))), "char", parts=[H], only=["red", "red_dark"],
+             where=lambda X, Y, Z: (np.abs(Y) > 0.3) & (np.abs(Y) < 0.66))
+    # palate (dark) under the upper jaw
+    vm.paint(Box((13.4, -1.6, 13.9), (21.0, 1.6, 14.24)), "mouth", parts=[H])
+    # upper teeth: two triangular fangs and smaller teeth, outside the lower jaw
+    hw_up = lambda x: 1.76 if x < 17.6 else (1.6 if x < 19.36 else 1.44)
+    for x0, rows in ((19.84, [3, 3, 1, 1, 1]), (19.04, [1, 1]), (18.40, [3, 1, 1]), (17.76, [1, 1]),
+                     (16.96, [3, 3, 1, 1, 1]), (16.32, [1, 1]), (15.68, [3, 1])):
+        hw = hw_up(x0 + 0.24)
         for side in (-1, 1):
             ya, yb = sorted((side * (hw - 0.16), side * hw))
-            vm.add(Box((x, ya, 14.08 - L_), (x + w_, yb, 14.08)), "tooth", H, big=False)
-            vm.add(Box((x + 0.16, ya, 14.08 - L_ - 0.16), (x + w_ - 0.16 if w_ > 0.32 else x + 0.32, yb, 14.08 - L_)),
-                   "tooth", H, big=False)
+            tooth(vm, x0, ya, yb, 14.08, rows, H)
     # eyes: notch at the front-side corner of the skull, neon at the bottom, heavy brow
-    vm.cut(sym(Box((14.24, 1.60, 15.36), (15.37, 2.41, 16.16))))
-    vm.paint(sym(Box((14.0, 1.40, 15.14), (14.26, 2.45, 16.2))), "socket", parts=[H])
-    vm.paint(sym(Box((14.0, 1.40, 15.14), (15.4, 1.62, 16.2))), "socket", parts=[H])
-    vm.paint(sym(Box((14.0, 1.40, 15.14), (15.4, 2.45, 15.38))), "socket", parts=[H])
+    vm.cut(sym(Box((14.40, 1.60, 15.52), (15.85, 2.41, 16.48))))
+    vm.paint(sym(Box((14.2, 1.40, 15.3), (14.42, 2.45, 16.56))), "socket", parts=[H])
+    vm.paint(sym(Box((14.2, 1.40, 15.3), (15.9, 1.62, 16.56))), "socket", parts=[H])
+    vm.paint(sym(Box((14.2, 1.40, 15.3), (15.9, 2.45, 15.54))), "socket", parts=[H])
     for side in (-1, 1):
-        neon(f"Eye{'L' if side > 0 else 'R'}", H, (14.64, side * 1.92, 15.76), (0.80, 0.32, 0.64), color=C_EYE)
-    vm.add(sym(Box((13.60, 1.44, 16.16), (15.68, 2.56, 16.64))), "red_dark", H, big=False)
-    vm.add(sym(Box((14.40, 1.76, 16.64), (15.36, 2.40, 16.96))), "char", H, big=False)
-    # crown of swept-back horns and cheek spikes
+        neon(f"Eye{'L' if side > 0 else 'R'}", H, (15.12, side * 1.92, 16.0), (0.80, 0.32, 0.64), color=C_EYE)
+    vm.add(sym(Box((13.44, 1.28, 16.48), (16.00, 2.56, 17.12))), "red_dark", H, big=False)
+    vm.add(sym(Box((14.40, 1.60, 17.12), (15.84, 2.40, 17.44))), "char", H, big=False)
+    # crown of swept-back horns, dorsal spikes down the head and neck, cheek spikes
     for side in (-1, 1):
-        horn(vm, (12.6, side * 1.5, 17.4), (11.4, side * 1.9, 18.9), (9.4, side * 2.3, 19.4), 0.42, 0.10, "char", H, n=22)
-        horn(vm, (11.4, side * 2.0, 16.6), (10.2, side * 2.6, 17.6), (8.6, side * 3.0, 17.7), 0.36, 0.10, "char", H, n=18)
-        horn(vm, (11.2, side * 2.2, 14.6), (10.0, side * 2.8, 14.8), (8.8, side * 3.2, 15.6), 0.32, 0.10, "red_dark", H, n=16)
-    for (x, h) in ((13.2, 1.3), (12.0, 1.6), (10.8, 1.4)):
-        poly = [(-0.5, 0), (0.5, 0), (0.0, 0.6 * h), (-0.6, h)]
-        vm.add(Plate((x, 0, 17.6), (1, 0, 0), (0, 0, 1), poly, 0.48), "char", H, big=False)
-    # lower jaw, hanging open: stepped profile (axis-aligned, keeps its studs)
-    jaw = [(11.6, 13.76), (13.4, 13.56), (15.6, 12.96), (17.8, 12.16), (19.8, 11.36), (20.4, 11.2),
-           (20.4, 10.4), (19.6, 10.08), (17.4, 10.56), (14.8, 11.36), (12.6, 12.16), (11.2, 12.8)]
-    vm.add(Plate(o, u, v, jaw, 3.20), "red", J, big=False)
-    vm.add(Plate(o, u, v, [(11.2, 12.8), (14.8, 11.36), (17.4, 10.56), (19.6, 10.08), (20.4, 10.4),
-                           (20.4, 10.9), (11.2, 13.2)], 3.52), "red", J, big=False)
-    vm.paint(Box((11.0, -2.0, 9.9), (20.6, 2.0, 11.9)), "bone", parts=[J],
-             where=lambda X, Y, Z: Z < 13.2 - 0.32 * (X - 11.2) - 0.9)       # pale chin
-    vm.paint(Box((11.4, -1.3, 10.6), (20.0, 1.3, 14.0)), "mouth", parts=[J],
-             where=lambda X, Y, Z: Z > 13.76 - 0.3 * (X - 11.6) - 0.34)      # tongue / mouth floor
-    lower = [(14.56, 0.32), (15.52, 0.48), (16.48, 0.32), (17.44, 0.48), (18.4, 0.32), (19.36, 0.64)]
-    for x, L_ in lower:
-        ztop = 13.76 - 0.3 * (x - 11.6)
-        zt = math.floor(ztop / S) * S
+        horn(vm, (13.0, side * 1.4, 17.6), (11.8, side * 1.8, 19.1), (9.8, side * 2.2, 19.7), 0.50, 0.12, "char", H, n=24)
+        horn(vm, (11.8, side * 2.1, 17.2), (10.4, side * 2.6, 18.2), (8.8, side * 3.0, 18.4), 0.42, 0.11, "char", H, n=20)
+        horn(vm, (11.6, side * 2.2, 14.8), (10.2, side * 2.8, 15.0), (8.9, side * 3.2, 15.8), 0.36, 0.10, "red_dark", H, n=18)
+    for (x, h) in ((14.4, 1.0), (13.2, 1.4), (12.0, 1.7), (10.9, 1.6)):
+        poly = [(-0.5, 0), (0.5, 0), (0.0, 0.6 * h), (-0.65, h)]
+        vm.add(Plate((x, 0, 17.5 if x > 12 else 17.4), (1, 0, 0), (0, 0, 1), poly, 0.48), "char", H, big=False)
+    # lower jaw, hanging open: deep, shorter, stepped profile (axis-aligned, keeps its studs)
+    top = list(zip(JAW_TOP_X, JAW_TOP_Z))
+    bottom = [(19.6, 10.88), (18.4, 10.4), (16.0, 10.56), (13.6, 11.36), (11.4, 12.32)]
+    vm.add(Plate(o, u, v, top + bottom, 3.20), "red", J, big=False)
+    vm.add(Plate(o, u, v, [(11.4, 12.32), (13.6, 11.36), (16.0, 10.56), (18.4, 10.4), (19.6, 10.88),
+                           (19.6, 11.2), (11.4, 12.9)], 3.52), "red", J, big=False)
+    vm.paint(Box((11.0, -2.0, 9.9), (20.0, 2.0, 13.0)), "bone", parts=[J],
+             where=lambda X, Y, Z: Z < 12.9 - 0.207 * (X - 11.4))                      # pale underside
+    vm.paint(Box((11.4, -1.3, 10.6), (19.7, 1.3, 14.0)), "mouth", parts=[J],
+             where=lambda X, Y, Z: Z > np.interp(X, JAW_TOP_X, JAW_TOP_Z) - 0.36)      # tongue
+    for x0, rows in ((18.72, [3, 3, 1, 1]), (17.76, [1, 1]), (16.80, [3, 1, 1]), (15.84, [1, 1]), (14.88, [3, 1])):
+        zt = math.floor(np.interp(x0 + 0.24, JAW_TOP_X, JAW_TOP_Z) / S) * S
         for side in (-1, 1):
             ya, yb = sorted((side * 1.28, side * 1.44))
-            vm.add(Box((x, ya, zt - 0.16), (x + 0.32, yb, zt + L_)), "tooth", J, big=False)
-            vm.add(Box((x + 0.08, ya, zt + L_), (x + 0.24, yb, zt + L_ + 0.16)), "tooth", J, big=False)
-    ATTACHMENTS.append(dict(name="FireBreath", part=H, position=(21.0, 0, 13.0), direction=(1, 0, -0.15)))
-    LIGHTS.append(dict(name="MouthGlow", part=H, position=(19.0, 0, 13.0), color=(255, 150, 50), range=8, brightness=1.5))
+            vm.add(Box((x0, ya, zt - 0.32), (x0 + 0.48, yb, zt)), "tooth", J, big=False)   # root in the gum
+            tooth(vm, x0, ya, yb, zt, rows, J, down=False)
+    ATTACHMENTS.append(dict(name="FireBreath", part=H, position=(20.6, 0, 13.0), direction=(1, 0, -0.15)))
+    LIGHTS.append(dict(name="MouthGlow", part=H, position=(18.6, 0, 13.0), color=(255, 150, 50), range=8, brightness=1.5))
 
 
 def make():

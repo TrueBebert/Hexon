@@ -201,6 +201,29 @@ def shelf_pack(sizes, W=1024, H=1024, reserve=(4, 4)):
     return pos
 
 
+def skyline_pack(sizes, W=1024, H=1024, reserve=(4, 4)):
+    """Column skyline packer: each rect (tallest first) drops where its top ends lowest."""
+    from scipy.ndimage import maximum_filter1d
+    heights = np.zeros(W, np.int64)
+    heights[:reserve[0]] = reserve[1]
+    order = sorted(range(len(sizes)), key=lambda i: (-sizes[i][1], -sizes[i][0]))
+    pos = [None] * len(sizes)
+    big = np.int64(10 ** 9)
+    for i in order:
+        w, h = sizes[i]
+        if w > W or h > H:
+            return None
+        m = maximum_filter1d(heights, size=w, mode="constant", cval=big)
+        base = m[np.arange(0, W - w + 1) + w // 2]          # max height under [x, x + w)
+        x = int(np.argmin(base))
+        y = int(base[x])
+        if y + h > H:
+            return None
+        heights[x:x + w] = y + h
+        pos[i] = (x, y)
+    return pos
+
+
 def quad_px_size(q):
     return (int(q[4]) * PX + 2, int(q[5]) * PX + 2)
 

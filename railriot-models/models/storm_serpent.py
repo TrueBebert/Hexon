@@ -45,6 +45,7 @@ PALETTE = {
     "navy_light": dict(rgb=(72, 82, 170), fx="scales"),
     "belly": dict(rgb=(72, 112, 206)),
     "cloud": dict(rgb=(26, 26, 54)),
+    "cloud_light": dict(rgb=(46, 48, 98)),
     "cloud_line": dict(rgb=(86, 94, 172)),
     "teal": dict(rgb=(42, 182, 198)),
     "teal_dark": dict(rgb=(22, 108, 140)),
@@ -122,38 +123,38 @@ def lantern_side(vm, x, side, name):
     """Lantern hanging from the rim beam on a long side (side = +1 / -1)."""
     W = "Wagon"
     y0 = side * WY
-    o = lambda a, b: (y0 + side * a, y0 + side * b)
-    ya, yb = o(0, 0.48)
+    o = lambda a, b: sorted((y0 + side * a, y0 + side * b))
+    ya, yb = o(0, 0.64)
     vm.add(Box((x - 0.08, ya, 6.40), (x + 0.08, yb, 6.56)), "iron", W, big=False)       # arm
-    ya, yb = o(0.32, 0.48)
-    vm.add(Box((x - 0.08, ya, 5.92), (x + 0.08, yb, 6.40)), "iron", W, big=False)       # chain
-    ya, yb = o(0.0, 0.80)
-    vm.add(Box((x - 0.40, ya, 5.76), (x + 0.40, yb, 5.92)), "iron", W, big=False)       # cap
-    vm.add(Box((x - 0.40, ya, 4.64), (x + 0.40, yb, 4.80)), "iron", W, big=False)       # base
-    for dx in (-0.40, 0.24):
-        for dy in (0.0, 0.64):
+    ya, yb = o(0.48, 0.64)
+    vm.add(Box((x - 0.08, ya, 6.08), (x + 0.08, yb, 6.40)), "iron", W, big=False)       # chain
+    ya, yb = o(0.0, 1.12)
+    vm.add(Box((x - 0.56, ya, 5.92), (x + 0.56, yb, 6.08)), "iron", W, big=False)       # cap
+    vm.add(Box((x - 0.56, ya, 4.32), (x + 0.56, yb, 4.48)), "iron", W, big=False)       # base
+    for dx in (-0.56, 0.40):
+        for dy in (0.0, 0.96):
             ya, yb = o(dy, dy + 0.16)
-            vm.add(Box((x + dx, ya, 4.80), (x + dx + 0.16, yb, 5.76)), "iron", W, big=False)
-    neon(name, W, (x, y0 + side * 0.40, 5.28), (0.48, 0.48, 0.96), color=C_LANTERN)
+            vm.add(Box((x + dx, ya, 4.48), (x + dx + 0.16, yb, 5.92)), "iron", W, big=False)
+    neon(name, W, (x, y0 + side * 0.56, 5.20), (0.72, 0.72, 1.36), color=C_LANTERN)
 
 
 def lantern_end(vm, y, end, name):
     """Lantern on an end face (end = +1 front / -1 back)."""
     W = "Wagon"
-    x0 = end * (WX + 0.48)  # end plaques stick out by one big cube
-    o = lambda a, b: (x0 + end * a, x0 + end * b)
-    xa, xb = o(-0.48, 0.48)
+    x0 = end * WX  # hangs on the end face beside the plaque (keeps the length within the class)
+    o = lambda a, b: sorted((x0 + end * a, x0 + end * b))
+    xa, xb = o(-0.48, 0.64)
     vm.add(Box((xa, y - 0.08, 6.40), (xb, y + 0.08, 6.56)), "iron", W, big=False)
-    xa, xb = o(0.32, 0.48)
-    vm.add(Box((xa, y - 0.08, 5.92), (xb, y + 0.08, 6.40)), "iron", W, big=False)
-    xa, xb = o(0.0, 0.80)
-    vm.add(Box((xa, y - 0.40, 5.76), (xb, y + 0.40, 5.92)), "iron", W, big=False)
-    vm.add(Box((xa, y - 0.40, 4.64), (xb, y + 0.40, 4.80)), "iron", W, big=False)
-    for dy in (-0.40, 0.24):
-        for dx in (0.0, 0.64):
+    xa, xb = o(0.48, 0.64)
+    vm.add(Box((xa, y - 0.08, 6.08), (xb, y + 0.08, 6.40)), "iron", W, big=False)
+    xa, xb = o(0.0, 1.12)
+    vm.add(Box((xa, y - 0.56, 5.92), (xb, y + 0.56, 6.08)), "iron", W, big=False)
+    vm.add(Box((xa, y - 0.56, 4.32), (xb, y + 0.56, 4.48)), "iron", W, big=False)
+    for dy in (-0.56, 0.40):
+        for dx in (0.0, 0.96):
             xa, xb = o(dx, dx + 0.16)
-            vm.add(Box((xa, y + dy, 4.80), (xb, y + dy + 0.16, 5.76)), "iron", W, big=False)
-    neon(name, W, (x0 + end * 0.40, y, 5.28), (0.48, 0.48, 0.96), color=C_LANTERN)
+            vm.add(Box((xa, y + dy, 4.48), (xb, y + dy + 0.16, 5.92)), "iron", W, big=False)
+    neon(name, W, (x0 + end * 0.56, y, 5.20), (0.72, 0.72, 1.36), color=C_LANTERN)
 
 
 EMBLEM = [  # triple spiral over a chevron (one char = one small cube), top row first
@@ -268,6 +269,9 @@ def wagon(vm):
         return (0.6 * hash01(ix // 2, iy // 2, iz // 2, seed=5) + 0.4 * hash01(ix, iy, iz, seed=6)) > 0.58
     vm.paint(Box((-WX - 0.5, -WY - 0.5, ZD - B), (WX + 0.5, WY + 0.5, ZR + 0.01)), "moss",
              only=["wood_dark"], parts=[W], where=moss_noise)
+    # moss clumps sitting on the rim
+    for x in (-15.4, -8.2, 5.2, 14.4):
+        vm.add(sym(Ellipsoid((x, WY - 0.3, ZR + 0.08), (0.75, 0.6, 0.42))), "moss", W, big=False, only_empty=True)
     rng = np.random.default_rng(3)
     strands = [(x, float(rng.choice([0.48, 0.64, 0.96, 1.28])))
                for x in (-20.4, -18.2, -15.0, -12.8, -8.9, -4.8, -2.4, 4.6, 8.9, 13.2, 15.4, 18.6)]
@@ -279,9 +283,13 @@ def wagon(vm):
 
 
 # ------------------------------------------------------------------------------- serpent
-def cloud(vm, puffs, part, spiral=True):
+def cloud(vm, puffs, part, spiral=True, only_empty=False, light=True):
     for (x, y, z, r) in puffs:
-        vm.add(Ellipsoid((x, y, z), (r, r * 0.92, r * 0.86)), "cloud", part)
+        vm.add(Ellipsoid((x, y, z), (r, r * 0.92, r * 0.86)), "cloud", part, only_empty=only_empty)
+    if light:
+        for (x, y, z, r) in puffs:
+            vm.paint(Ellipsoid((x, y, z), (r + 0.2, r * 0.92 + 0.2, r * 0.86 + 0.2)), "cloud_light", only=["cloud"],
+                     parts=[part], where=lambda X, Y, Z, z=z, r=r: Z > z + 0.42 * r)
     if spiral:
         for (x, y, z, r) in puffs:
             if r < 0.9:
@@ -317,9 +325,8 @@ def crystal(name, part, base, h, w, tx, ty):
     R = rot(ry=ty) @ rot(rx=tx) @ rot(rz=45)
     ax = R @ np.array([0, 0, 1.0])
     base = np.asarray(base, float)
-    neon(f"{name}", part, base + ax * 0.30 * h, (w, w * 0.85, 0.60 * h), R=R)
-    neon(f"{name}Mid", part, base + ax * 0.725 * h, (w * 0.66, w * 0.56, 0.25 * h), R=R)
-    neon(f"{name}Tip", part, base + ax * 0.925 * h, (w * 0.36, w * 0.30, 0.15 * h), R=R, color=C_CRYSTAL_TIP)
+    neon(f"{name}", part, base + ax * 0.34 * h, (w, w * 0.85, 0.68 * h), R=R)
+    neon(f"{name}Tip", part, base + ax * 0.84 * h, (w * 0.5, w * 0.42, 0.32 * h), R=R, color=C_CRYSTAL_TIP)
     return base + ax * h, ax
 
 
@@ -338,8 +345,9 @@ def body(vm):
     vm.paint(Plate((-18.6, 0, 7.8), (1, 0, 0), (0, 0, 1), [(-0.9, 1.6), (-2.2, 2.7), (-2.0, 1.2), (-1.5, 1.4)], 0.6),
              "teal", parts=["Tail2"])
     # storm clouds: behind the swirls and along the flanks
-    cloud(vm, [(-16.0, 0, 9.8, 1.40), (-14.2, 0, 11.0, 1.70), (-12.4, 0, 10.9, 1.35)], P)
-    for (x, y, z, r) in [(-8.8, 3.0, 9.8, 1.15), (-4.0, 3.25, 10.1, 1.2), (1.0, 3.2, 10.0, 1.1), (5.6, 2.9, 9.8, 1.0)]:
+    cloud(vm, [(-16.4, 0, 10.0, 1.6), (-14.4, 0, 11.6, 1.95), (-12.2, 0, 11.3, 1.55), (-15.2, 2.0, 9.8, 1.25),
+               (-15.2, -2.0, 9.8, 1.25), (-17.8, 0, 9.4, 1.1)], P)
+    for (x, y, z, r) in [(-7.6, 3.1, 10.0, 1.4), (1.6, 3.2, 10.2, 1.35)]:
         cloud(vm, [(x, y, z, r), (x, -y, z, r)], P)
     # turquoise wave swirls along the spine
     for (x, z, r, t) in SWIRLS:
@@ -350,6 +358,12 @@ def body(vm):
         top, ax = crystal(f"Crystal{i + 1}", P, (x, y, z), h, w, tx, ty)
         if i == 0:
             ATTACHMENTS.append(dict(name="CrystalTop", part=P, position=top.tolist(), direction=ax.tolist()))
+        if i < 3:
+            ATTACHMENTS.append(dict(name=f"Lightning{i + 1}", part=P, position=top.tolist(), direction=ax.tolist()))
+    for j, (sx, sy) in enumerate(((1, 1), (1, -1), (-1, 1), (-1, -1))):
+        R = rot(ry=-sx * 32) @ rot(rx=sy * 26) @ rot(rz=45)
+        neon(f"Shard{j + 1}", P, (-2.8 + sx * 1.35, sy * 1.0, 12.9), (0.62, 0.52, 1.5), R=R)
+    ATTACHMENTS.append(dict(name="Lightning4", part=P, position=(-14.4, 0, 13.3), direction=(0, 0, 1)))
 
 
 NECK = [(9.4, 0, 8.4), (10.3, 0, 12.4), (10.4, 0, 16.4), (10.6, 0, 19.8), (11.6, 0, 22.9), (13.4, 0, 25.0), (15.4, 0, 26.0)]
@@ -399,8 +413,13 @@ def neck(vm):
         if center[0] >= 14.4 and center[2] > 23.0:
             part = "Head"
         neon(f"NeckStripe{j + 1}", part, center, (L + 0.14, 0.56, 0.24), R=R, color=C_STRIPE)
-    cloud(vm, [(8.4, 0, 14.2, 1.35), (8.9, 1.9, 13.4, 1.1), (8.9, -1.9, 13.4, 1.1)], "Neck1")
-    cloud(vm, [(9.0, 0, 21.2, 1.25), (9.5, 1.7, 20.4, 1.05), (9.5, -1.7, 20.4, 1.05)], "Neck2")
+    cloud(vm, [(7.6, 0, 10.6, 1.5), (8.6, 2.3, 10.2, 1.3), (8.6, -2.3, 10.2, 1.3), (11.0, 2.3, 9.8, 1.15),
+               (11.0, -2.3, 9.8, 1.15)], "Body", only_empty=True)
+    cloud(vm, [(8.5, 0, 14.6, 1.45), (8.9, 1.85, 13.8, 1.2), (8.9, -1.85, 13.8, 1.2), (9.6, 1.4, 15.6, 1.0),
+               (9.6, -1.4, 15.6, 1.0)], "Neck1", only_empty=True)
+    cloud(vm, [(8.9, 0, 21.4, 1.35), (9.4, 1.6, 20.6, 1.15), (9.4, -1.6, 20.6, 1.15)], "Neck2", only_empty=True)
+    ATTACHMENTS.append(dict(name="Lightning5", part="Neck2", position=(8.9, 0, 22.6), direction=(0, 0, 1)))
+
 
 
 def snout_hw(x):
@@ -454,8 +473,10 @@ def head(vm):
     for x in (19.04, 20.0, 20.96):
         vm.paint(sym(Box((x, 0.5, 25.76), (x + 0.16, 1.13, 25.92))), "tooth", parts=[J])
     # cloud mane trailing from the back of the head
-    cloud(vm, [(14.2, 0, 28.0, 1.30), (12.4, 0, 27.5, 1.60), (10.4, 0, 26.7, 1.50), (8.6, 0, 25.9, 1.30),
-               (7.0, 0, 25.2, 1.05), (12.6, 1.4, 26.6, 1.0), (12.6, -1.4, 26.6, 1.0)], H)
+    cloud(vm, [(14.2, 0, 28.0, 1.35), (12.4, 0, 27.6, 1.75), (10.3, 0, 26.9, 1.7), (8.3, 0, 26.0, 1.5),
+               (6.5, 0, 25.0, 1.2), (5.0, 0, 24.2, 0.9), (12.2, 1.5, 26.6, 1.2), (12.2, -1.5, 26.6, 1.2),
+               (9.8, 1.4, 25.6, 1.1), (9.8, -1.4, 25.6, 1.1)], H)
+    ATTACHMENTS.append(dict(name="Lightning6", part=H, position=(10.3, 0, 28.3), direction=(0, 0, 1)))
     # swept-back fins on the skull and frills on the cheeks
     for side in (-1, 1):
         pts = bezier((15.6, side * 1.1, 28.0), (14.6, side * 1.3, 29.0), (13.0, side * 1.6, 29.3), n=18)

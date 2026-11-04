@@ -296,6 +296,8 @@ bg.inputs["Strength"].default_value = 0.85
 scene.render.engine = "CYCLES"
 scene.cycles.device = "CPU"
 scene.cycles.samples = 20 if QUICK else 72
+if "--samples" in argv:
+    scene.cycles.samples = int(argv[argv.index("--samples") + 1])
 scene.cycles.use_denoising = False
 try:
     scene.cycles.denoiser = "OPENIMAGEDENOISE"

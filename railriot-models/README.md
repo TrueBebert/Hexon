@@ -5,12 +5,14 @@ Modèles voxel générés par code (Python + numpy, Blender en ligne de commande
 
 | Modèle | Référence | Taille (L × l × h, studs) | Triangles (contour compris) | Textures |
 |---|---|---|---|---|
-| `storm_serpent` | serpent d'orage bleu, wagon en bois | ≈ 44,8 × 12,5 × 29,4 | ≈ 24 500 | 3 × 1024² |
-| `fire_dragon` | dragon de feu, wagon industriel | ≈ 44,3 × 10,6 × 21,6 | ≈ 23 300 | 3 × 1024² |
+| `storm_serpent` | serpent d'orage bleu, wagon en bois | ≈ 44,5 × 12,8 × 29,4 | 29 042 | 3 × 1024² |
+| `fire_dragon` | dragon de feu, wagon industriel | ≈ 44,3 × 10,6 × 21,1 | 24 864 | 3 × 1024² |
+
+Version actuelle : **v2** (`output/<modèle>/v2/`). La v1 est gardée à côté pour comparer.
 
 Petit cube 0,16 stud, gros cube 0,48 stud (classe « boss colossal »).
 
-## Fichiers livrés (`output/<modèle>/v1/`)
+## Fichiers livrés (`output/<modèle>/v2/`)
 
 - `<modèle>.glb` et `<modèle>.fbx` : un mesh par partie (et quelques morceaux quand une partie dépasse
   un atlas), pivot de chaque partie au centre de son articulation, 1 unité = 1 stud.
@@ -70,3 +72,19 @@ Dépendances : Python 3 avec numpy, scipy et Pillow ; Blender 4 (avec numpy) ; p
 - `texture.py` : AO par lancer de rayons dans la grille, studs, arêtes, packing de l'atlas.
 - `fx.py` : peinture procédurale (planches, lave, rayures de danger, écailles, tôles).
 - `build.py` : orchestration, manifeste. `blender_export.py` : glb/fbx et rendus Cycles.
+
+## Historique
+
+**v2**
+- Dragon de feu : tête refaite (museau plus court qui descend du front vers le nez, crâne plus bas, arcade
+  en haut du visage, mâchoire inférieure plus profonde au dessous ivoire, dents triangulaires et crocs,
+  couronne de cornes qui continue sur la nuque), gorge ivoire continue, tuyaux plus épais avec colliers,
+  queue qui monte au-dessus des caisses puis redescend (7 piques), échelle, griffures creusées, 3 fenêtres
+  par côté de cabine.
+- Serpent d'orage : nuages regroupés en grosses masses à dessus plus clair (collier à la base du cou,
+  milieu et haut du cou, grosse masse à l'arrière, crinière plus grande), cristaux en 2 pièces et éclats au
+  pied du grand cristal, lanternes 1,4 fois plus grandes, touffes de mousse sur le bord, points d'attache
+  `Lightning1..6` pour les éclairs.
+- Pipeline : packing en « skyline » (atlas remplis à 93 %), nombre d'échantillons de rendu réglable.
+
+**v1** : premiers modèles complets (pipeline, exports, rendus).
