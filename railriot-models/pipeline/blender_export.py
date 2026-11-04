@@ -62,6 +62,27 @@ for i, pg in enumerate(info["pages"]):
         bsdf.inputs["Specular"].default_value = 0.15
     atlas_mats.append(m)
 
+emissive_mats = {}
+
+
+def emissive_mat(page):
+    """Atlas material that also glows (parts meant to be set to Neon in Studio)."""
+    if page in emissive_mats:
+        return emissive_mats[page]
+    m = atlas_mats[page].copy()
+    m.name = f"{NAME}_Atlas{page + 1}_Glow"
+    nt = m.node_tree
+    bsdf = nt.nodes["Principled BSDF"]
+    tex = [n for n in nt.nodes if n.type == "TEX_IMAGE"][0]
+    try:
+        nt.links.new(tex.outputs["Color"], bsdf.inputs["Emission Color"])
+    except KeyError:
+        nt.links.new(tex.outputs["Color"], bsdf.inputs["Emission"])
+    bsdf.inputs["Emission Strength"].default_value = 1.1
+    emissive_mats[page] = m
+    return m
+
+
 neon_mats = {}
 
 
@@ -99,7 +120,10 @@ for mm in info["meshes"]:
     loop_v = np.zeros(len(me.loops), np.int64)
     me.loops.foreach_get("vertex_index", loop_v)
     uvl.data.foreach_set("uv", UV[loop_v].ravel())
-    me.materials.append(atlas_mats[mm["page"]])
+    if parts[mm["part"]].get("emissive"):
+        me.materials.append(emissive_mat(mm["page"]))
+    else:
+        me.materials.append(atlas_mats[mm["page"]])
     for poly in me.polygons:
         poly.use_smooth = False
     me.update()
@@ -342,6 +366,7 @@ views = {
     "front": dict(dir=(1, 0, 0.18), target=center, radius=max(size.y, size.z) * 0.62, res=(900, 1000)),
     "profile": dict(dir=(0, 1, 0.12), target=center, radius=max(size.x, size.z) * 0.53, res=(1400, 900)),
     "back34": dict(dir=(-1.0, -1.05, 0.5), target=center, radius=size.length * 0.48, res=(1280, 800)),
+    "ref": dict(dir=(0.42, -1.0, 0.22), target=center, radius=size.length * 0.40, res=(1400, 760)),
 }
 if "head" in R:
     hc = Vector(R["head"]["center"])
@@ -356,7 +381,7 @@ if QUICK:
         v["res"] = (int(v["res"][0] * 0.62), int(v["res"][1] * 0.62))
 
 os.makedirs(os.path.join(OUT, "renders"), exist_ok=True)
-for vname in (VIEWS or ["34", "front", "profile", "back34", "head_34", "head_front", "head_profile", "head_low"]):
+for vname in (VIEWS or ["ref", "34", "front", "profile", "back34", "head_34", "head_front", "head_profile", "head_low"]):
     if vname not in views:
         continue
     v = views[vname]

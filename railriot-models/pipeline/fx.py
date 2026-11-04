@@ -75,4 +75,25 @@ def metal(col, vox, d, pu, pv):
     return col
 
 
-FX = dict(wood=wood, lava=lava, hazard=hazard, scales=scales, metal=metal)
+def scales2(col, vox, d, pu, pv):
+    """Overlapping scales, 2 x 2 small cubes each, staggered rows: light upper edge, dark lower rim."""
+    col = col.copy()
+    x, y, z = vox[:, 0], vox[:, 1], vox[:, 2]
+    side = d < 4
+    along = np.where(d < 2, y, x)
+    # side faces: rows go up the body; top faces: rows run along X
+    row = np.where(side, z // 2, x // 2)
+    a = np.where(side, along, y) + (row % 2)
+    vcell = np.where(side, z, x) % 2
+    u = (a % 2) * PX + pu
+    v = vcell * PX + pv
+    f = np.ones(len(col))
+    f += 0.07 * (v / (2 * PX - 1) - 0.5) * 2               # brighter toward the overlap
+    f[(v < 2)] *= 0.82                                      # shadow under the scale
+    f[(v < 4) & ((u < 2) | (u > 2 * PX - 3))] *= 0.90       # rounded lower corners
+    f[(v > 2 * PX - 3) & (u > 2) & (u < 2 * PX - 3)] *= 1.06
+    f[d == 5] = 1.0
+    return col * f[:, None]
+
+
+FX = dict(wood=wood, lava=lava, hazard=hazard, scales=scales, scales2=scales2, metal=metal)

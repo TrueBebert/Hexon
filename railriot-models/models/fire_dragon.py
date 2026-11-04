@@ -37,8 +37,9 @@ PALETTE = {
     "hub": dict(rgb=(122, 40, 32)),
     "claw": dict(rgb=(255, 136, 40), glow=True, studs=False),
     # dragon
-    "red": dict(rgb=(158, 34, 30), fx="scales"),
-    "red_dark": dict(rgb=(100, 24, 26), fx="scales"),
+    "red": dict(rgb=(158, 34, 30), fx="scales2"),
+    "red_dark": dict(rgb=(100, 24, 26), fx="scales2"),
+    "flame_core": dict(rgb=(255, 236, 150), glow=True, studs=False),
     "char": dict(rgb=(48, 32, 34)),
     "flame": dict(rgb=(244, 122, 30), glow=True),
     "flame_hot": dict(rgb=(255, 198, 66), glow=True),
@@ -51,23 +52,24 @@ PALETTE = {
 PARTS = [
     dict(name="Wagon", parent=None, pivot=(0, 0, 0), group="static", outline=0.16),
     dict(name="Body", parent="Wagon", pivot=(0, 0, ZD), group="static", outline=0.2),
-    dict(name="Lava", parent="Body", pivot=(-5.5, 0, 12.0), group="static", outline=0.2),
-    dict(name="Tail1", parent="Body", pivot=(-12.96, 0, 13.6), outline=0.2),
-    dict(name="Tail2", parent="Tail1", pivot=(-16.32, 0, 14.3), outline=0.2),
-    dict(name="Tail3", parent="Tail2", pivot=(-19.2, 0, 12.8), outline=0.2),
-    dict(name="Neck", parent="Body", pivot=(7.2, 0, 12.5), outline=0.2),
-    dict(name="Head", parent="Neck", pivot=(10.56, 0, 14.6), outline=0.2),
-    dict(name="Jaw", parent="Head", pivot=(12.0, 0, 13.6), outline=0.2),
+    dict(name="Lava", parent="Body", pivot=(-6.0, 0, 11.04), group="static", outline=0.2),
+    dict(name="Flames", parent="Body", pivot=(-4.0, 0, 18.0), group="static", outline=0.0, emissive=True, flat=True),
+    dict(name="Tail1", parent="Body", pivot=(-12.96, 0, 12.84), outline=0.2),
+    dict(name="Tail2", parent="Tail1", pivot=(-16.8, 0, 13.44), outline=0.2),
+    dict(name="Tail3", parent="Tail2", pivot=(-20.16, 0, 10.44), outline=0.2),
+    dict(name="Neck", parent="Body", pivot=(7.2, 0, 12.6), outline=0.2),
+    dict(name="Head", parent="Neck", pivot=(11.04, 0, 16.04), outline=0.2),
+    dict(name="Jaw", parent="Head", pivot=(12.48, 0, 15.04), outline=0.2),
 ]
 
 NEON = []
 ATTACHMENTS = []
 MIN_KEEP = 64
 # no outline hull inside the eye sockets and in front of them (it would hide the eyes)
-NO_OUTLINE = [sym(Box((14.2, 1.44, 15.52), (15.85, 2.80, 16.48))), sym(Box((15.84, 1.44, 15.52), (22.6, 2.80, 16.48)))]
+NO_OUTLINE = [sym(Box((14.68, 1.44, 16.96), (16.33, 2.80, 17.92))), sym(Box((16.32, 1.44, 16.96), (23.0, 2.80, 17.92)))]
 LIGHTS = []
 DROP_DOWN = dict(parts=["Wagon"], below=2.5)
-RENDER = dict(head=dict(center=(15.6, 0, 15.0), radius=5.4), rail_gauge=7.68)
+RENDER = dict(head=dict(center=(16.1, 0, 16.4), radius=5.6), rail_gauge=7.68)
 
 C_LIGHT = (255, 196, 72)
 C_EYE = (255, 150, 36)
@@ -75,7 +77,15 @@ C_PIPE = (255, 140, 36)
 C_VENT = (255, 118, 30)
 
 
+OFF = np.zeros(3)   # current translation of the shapes being built (see make())
+
+
+def at(p):
+    return tuple(float(c) for c in np.asarray(p, float) + OFF)
+
+
 def neon(name, part, center, size, R=None, color=C_LIGHT, shape="Block"):
+    center = at(center)
     NEON.append(dict(name=name, part=part, center=tuple(float(c) for c in center), size=tuple(size),
                      R=(np.eye(3) if R is None else np.asarray(R)).tolist(), color=color, shape=shape))
 
@@ -138,14 +148,14 @@ def banner(vm, cx, side):
 
 
 def railing(vm, x0, x1, y, h=1.6):
+    """Light railing: posts every ~2.4 studs and a top rail."""
     W = "Wagon"
-    n = max(2, int(round((x1 - x0) / 1.44)) + 1)
+    n = max(2, int(round((x1 - x0) / 2.4)) + 1)
     for i in range(n):
         x = x0 + (x1 - x0) * i / (n - 1)
         xs = math.floor(x / S + 0.5) * S
         vm.add(Box((xs - 0.16, y - 0.16, ZD), (xs + 0.16, y + 0.16, ZD + h)), "rail", W, big=False)
     vm.add(Box((x0 - 0.16, y - 0.16, ZD + h - 0.32), (x1 + 0.16, y + 0.16, ZD + h)), "rail", W, big=False)
-    vm.add(Box((x0, y - 0.16, ZD + 0.64), (x1, y + 0.16, ZD + 0.80)), "rail", W, big=False)
 
 
 def crate(vm, lo, hi):
@@ -169,47 +179,48 @@ def crate(vm, lo, hi):
 
 
 def wagon(vm):
+    """Industrial wagon, kept simple: the dragon on top gets the detail."""
     W = "Wagon"
     vm.add(Box((WX0, -WY, Z0), (WX1, WY, ZD)), "metal", W)
     vm.paint(Box((WX0, -WY, ZD - 2 * B), (WX1, WY, ZD)), "hazard", parts=[W])
     vm.paint(Box((WX0, -WY + 0.5, ZD - 0.2), (WX1, WY - 0.5, ZD + 0.1)), "metal", parts=[W])   # deck top stays metal
     vm.paint(Box((WX0, -WY, Z0), (WX1, WY, Z0 + B)), "metal_dark", parts=[W])                 # skirt
-    # deck edge lip
-    lip = Box((WX0, -WY, ZD), (WX1, WY, ZD + S)) - Box((WX0 + 0.32, -WY + 0.32, ZD - 1), (WX1 - 0.32, WY - 0.32, ZD + 1))
-    vm.add(lip, "metal_dark", W, big=False)
     # side panels set back one small cube under the hazard band
-    for a, b in ((-18.72, -12.48), (-11.52, -6.24), (-5.28, 0.96), (1.92, 8.16), (9.12, 15.84)):
+    for a, b in ((-18.72, -6.24), (-5.28, 8.16), (9.12, 15.84)):
         vm.cut(sym(Box((a, WY - S, Z0 + B), (b, WY + 0.01, ZD - 2 * B))))
     # front cab with lights
-    vm.add(Box((10.56, -3.84, ZD), (16.32, 3.84, 8.16)), "metal", W)
-    vm.add(Box((10.08, -4.32, 8.16), (16.80, 4.32, 8.64)), "metal_dark", W)
+    vm.add(Box((10.56, -3.84, ZD), (16.32, 3.84, 8.64)), "metal", W)
+    vm.paint(Box((10.5, -3.9, 8.16), (16.4, 3.9, 8.7)), "metal_dark", parts=[W])
     for i, y in enumerate((-1.6, 0.0, 1.6)):
         neon(f"CabLight{i + 1}", W, (16.40, y, 7.2), (0.16, 1.12, 0.64))
     vm.cut(Box((16.16, -2.32, 6.80), (16.33, 2.32, 7.60)))
     for side in (-1, 1):
         for i, x in enumerate((11.68, 13.12, 14.56)):
             neon(f"CabSide{'L' if side > 0 else 'R'}{i + 1}", W, (x, side * 3.76, 7.2), (0.96, 0.16, 0.64))
-        vm.cut(Box((11.2, side * 3.68 - 0.17, 6.88), (15.04, side * 3.68 + 0.17, 7.52)) if False else
-               Box((11.2, min(side * 3.68, side * 3.85), 6.88), (15.04, max(side * 3.68, side * 3.85), 7.52)))
-    # front bumper with bone tusks (cow-catcher) and horns
+        vm.cut(Box((11.2, min(side * 3.68, side * 3.85), 6.88), (15.04, max(side * 3.68, side * 3.85), 7.52)))
+    # front bumper with chunky bone tusks (cow-catcher) and horns, in big cubes
     vm.add(Box((16.80, -4.32, Z0), (19.20, 4.32, 4.80)), "metal_dark", W)
     vm.add(Box((16.80, -3.36, 4.80), (18.72, 3.36, ZD)), "metal", W)
     for i, y in enumerate((-1.2, 1.2)):
         neon(f"BumperLight{i + 1}", W, (18.80, y, 5.28), (0.16, 1.28, 0.48))
     vm.cut(Box((18.56, -2.0, 5.04), (18.73, 2.0, 5.52)))
-    for y in (-3.0, -1.1, 1.1, 3.0):
-        horn(vm, (18.9, y, 3.4), (20.6, y, 3.5), (21.9, y, 2.3), 0.40, 0.10, "bone", W, n=20)
+    for y in (-2.88, -0.96, 0.96, 2.88):
+        pts = bezier((18.9, y, 3.6), (20.6, y, 3.6), (21.9, y, 2.4), n=16)
+        for p_, r_ in zip(pts, np.linspace(0.48, 0.24, 16)):
+            vm.add(Box(p_ - r_, p_ + r_), "bone", W, big=True)
     for side in (-1, 1):
-        horn(vm, (18.0, side * 3.6, 5.5), (18.8, side * 3.8, 6.8), (19.6, side * 4.0, 8.1), 0.38, 0.10, "bone", W, n=18)
+        pts = bezier((18.0, side * 3.6, 5.6), (18.8, side * 3.8, 6.9), (19.6, side * 3.9, 8.2), n=14)
+        for p_, r_ in zip(pts, np.linspace(0.48, 0.24, 14)):
+            vm.add(Box(p_ - r_, p_ + r_), "bone", W, big=True)
     # wheels, bogies
     for x in (-15.36, -10.56, 3.84, 8.64):
         vm.add(sym(Cylinder((x, 3.36, 1.92), (x, 4.32, 1.92), 1.92)), "wheel", W)
         ring = Cylinder((x, 4.16, 1.92), (x, 4.33, 1.92), 1.93) - Cylinder((x, 4.0, 1.92), (x, 4.5, 1.92), 1.45)
         vm.paint(sym(ring), "wheel_rim", parts=[W])
-        vm.add(sym(Cylinder((x, 4.32, 1.92), (x, 4.48, 1.92), 0.48)), "hub", W, big=False)
+        vm.paint(sym(Cylinder((x, 4.16, 1.92), (x, 4.33, 1.92), 0.5)), "hub", parts=[W])
     for a, b in ((-15.36, -10.56), (3.84, 8.64)):
         vm.add(sym(Box((a, 2.40, 1.44), (b, 3.36, 2.40))), "metal_dark", W)
-    # side lights, claw scratches
+    # side lights, painted claw scratches
     for side in (-1, 1):
         for i, x in enumerate((-9.6, -8.16)):
             neon(f"SideLight{'L' if side > 0 else 'R'}{i + 1}", W, (x, side * (WY - 0.08), 3.84), (0.96, 0.16, 0.48))
@@ -225,14 +236,7 @@ def wagon(vm):
             d = (X - xo) - (Z - 2.9) * 0.62
             out |= (np.abs(d) < 0.14) & (Z > 2.9 + k * 0.08) & (Z < 4.64 - k * 0.1)
         return out
-    # claw marks gouged one small cube deep into the panel, glowing at the bottom
-    from pipeline.vox import Func
-    for side in (-1, 1):
-        ya, yb = sorted((side * (WY - 2 * S), side * (WY - S)))
-        gouge = Func(lambda P: claws(P[:, 0], P[:, 1], P[:, 2]), (-4.6, ya, 2.8), (0.2, yb, 4.7))
-        vm.cut(gouge)
-        ya2, yb2 = sorted((side * (WY - 3 * S), side * (WY - 2 * S)))
-        vm.paint(Box((-4.6, ya2, 2.8), (0.2, yb2, 4.7)), "claw", parts=[W], where=claws)
+    vm.paint(sym(Box((-4.6, WY - 3 * S, 2.8), (0.2, WY + 0.01, 4.7))), "claw", parts=[W], where=claws)
     # ladder on the chassis side, by the rear railing
     for side in (-1, 1):
         ya, yb = sorted((side * WY, side * (WY + S)))
@@ -243,74 +247,70 @@ def wagon(vm):
     # railings, crates, banners
     for side in (-1, 1):
         railing(vm, -19.2, -13.0, side * (WY - 0.24))
-        railing(vm, 1.6, 9.6, side * (WY - 0.24))
+        railing(vm, 3.6, 9.6, side * (WY - 0.24))
         banner(vm, -15.6, side)
         banner(vm, 3.4, side)
     crate(vm, (-19.20, -4.32, ZD), (-17.28, -2.40, ZD + 1.92))
     crate(vm, (-19.20, 2.40, ZD), (-17.28, 4.32, ZD + 1.92))
-    for side in (-1, 1):
-        ya, yb = sorted((side * (WY - S), side * (WY + 0.48)))
-        vm.add(Box((-1.92, ya, Z0 + 0.48), (0.48, yb, 4.80)), "wood", W, big=False)
-        crate_frame = Box((-1.92, ya, Z0 + 0.48), (0.48, yb, 4.80))
-        vm.paint(crate_frame - Box((-1.76, ya - 1, Z0 + 0.64), (0.32, yb + 1, 4.64)), "wood_dark", parts=[W])
     LIGHTS.append(dict(name="CabGlow", part=W, position=(16.8, 0, 7.2), color=C_LIGHT, range=10, brightness=1.5))
 
 
 # ------------------------------------------------------------------------------ dragon
-SPIKES = [  # x, height, half width of the base
-    (-11.8, 3.6, 1.45), (-9.4, 4.6, 1.6), (-6.9, 5.3, 1.7), (-4.4, 5.6, 1.75),
-    (-1.9, 5.4, 1.7), (0.6, 4.8, 1.6), (3.0, 4.0, 1.45), (5.2, 3.0, 1.2),
+SPIKES = [  # x, height, half width of the base (tall flame blades along the armoured back)
+    (-14.0, 4.2, 1.30), (-11.8, 5.2, 1.45), (-9.6, 6.0, 1.55), (-7.4, 6.6, 1.60), (-5.2, 7.0, 1.65),
+    (-3.0, 6.9, 1.60), (-0.8, 6.5, 1.55), (1.4, 5.8, 1.45), (3.6, 4.9, 1.30), (5.7, 3.9, 1.10),
 ]
 
 
-def spike(vm, x, zb, h, hw, part, thick=0.96):
-    """Flame spike: dark red blade curving back, glowing core (geometry in big cubes, paint fine)."""
-    poly = [(-hw, 0), (hw, 0), (hw * 0.75, 0.3 * h), (hw * 0.25, 0.62 * h), (-hw * 0.35, 0.9 * h),
-            (-hw * 0.95, h), (-hw * 0.7, 0.66 * h), (-hw * 0.95, 0.3 * h)]
-    o = (x, 0, zb)
-    vm.add(Plate(o, (1, 0, 0), (0, 0, 1), poly, thick), "red_dark", part, big=True)
-    vm.add(Plate(o, (1, 0, 0), (0, 0, 1), scale_poly(poly, 0.6, 0, 0), thick * 2), "red_dark", part, big=True)
-    flame = scale_poly(poly, 0.72, -hw * 0.05, -0.1)
-    core = scale_poly(poly, 0.42, -hw * 0.05, -0.2)
-    vm.paint(Plate(o, (1, 0, 0), (0, 0, 1), flame, 2.0), "flame", parts=[part])
-    vm.paint(Plate(o, (1, 0, 0), (0, 0, 1), core, 2.0), "flame_hot", parts=[part])
-    tipz = zb + 0.82 * h
-    vm.paint(Box((x - hw, -1, tipz), (x + hw, 1, zb + h + 0.5)), "char", parts=[part], only=["red_dark"])
+def spike(vm, x, zb, h, hw, part, flames="Flames"):
+    """Flame spike: dark red blade (big cubes) curving back, with a glowing flame core of its own."""
+    poly = [(-hw, 0), (hw, 0), (hw * 0.70, 0.28 * h), (hw * 0.18, 0.58 * h), (-hw * 0.45, 0.86 * h),
+            (-hw * 1.15, h), (-hw * 0.80, 0.62 * h), (-hw * 0.98, 0.28 * h)]
+    o, u, v = (x, 0, zb), (1, 0, 0), (0, 0, 1)
+    vm.add(Plate(o, u, v, poly, 0.96), "red_dark", part, big=True)
+    vm.add(Plate(o, u, v, scale_poly(poly, 0.55, 0, 0), 1.92), "red_dark", part, big=True)
+    flame = scale_poly(poly, 0.72, -hw * 0.08, 0.2)
+    vm.cut(Plate(o, u, v, flame, 2.2), only_parts=[part])                      # open the blade...
+    vm.add(Plate(o, u, v, flame, 0.64), "flame", flames, big=False)             # ...and set the flame in it
+    vm.paint(Plate(o, u, v, scale_poly(poly, 0.46, -hw * 0.08, 0.15), 1.0), "flame_hot", parts=[flames])
+    vm.paint(Plate(o, u, v, scale_poly(poly, 0.24, -hw * 0.08, 0.1), 1.0), "flame_core", parts=[flames])
+    tipz = zb + 0.84 * h
+    vm.paint(Box((x - hw - 0.5, -1.2, tipz), (x + hw, 1.2, zb + h + 0.5)), "char", parts=[part], only=["red_dark"])
 
 
 def body(vm):
     P, L = "Body", "Lava"
-    cx, cz, r = -5.5, 12.0, 3.12
-    vm.add(Cylinder((-12.0, 0, cz), (1.0, 0, cz), r), "lava", L)
-    for xa, xb in ((-12.96, -12.0), (0.96, 1.92)):
-        vm.add(Cylinder((xa, 0, cz), (xb, 0, cz), 3.6), "metal_dark", P)
-        vm.add(Cylinder((xa - 0.16, 0, cz), (xb + 0.16, 0, cz), 2.4), "metal", P, big=False)
+    cx, cz, r = -6.0, 12.0, 3.36
+    vm.add(Cylinder((-14.4, 0, cz), (2.4, 0, cz), r), "lava", L)
+    for xa, xb in ((-15.36, -14.40), (2.40, 3.36)):
+        vm.add(Cylinder((xa, 0, cz), (xb, 0, cz), 3.84), "metal_dark", P)
+        vm.add(Cylinder((xa - 0.16, 0, cz), (xb + 0.16, 0, cz), 2.88), "metal", P, big=False)
     # tank cradle on the deck
-    vm.add(Box((-12.48, -2.88, ZD), (1.44, 2.88, 9.12)), "metal_dark", P)
-    for xa in (-11.04, -5.76, -0.48):
+    vm.add(Box((-14.88, -2.88, ZD), (2.88, 2.88, 9.12)), "metal_dark", P)
+    for xa in (-13.44, -6.24, 0.96):
         vm.add(Box((xa, -3.36, ZD), (xa + 0.96, 3.36, 9.6)), "metal", P)
-    # bone ribs over the tank
-    for x in (-10.08, -7.44, -4.80, -2.16):
-        band = arc_band(r - 0.2, r + 0.9, -152, 152)
+    # five thick bone ribs over the tank
+    for x in (-12.0, -9.36, -6.72, -4.08, -1.44):
+        band = arc_band(r - 0.2, r + 1.1, -160, 160)
         vm.add(Plate((x, 0, cz), (0, 1, 0), (0, 0, 1), band, 0.96), "bone", P, big=True)
-        vm.paint(Plate((x, 0, cz), (0, 1, 0), (0, 0, 1), arc_band(r + 0.62, r + 1.0, -152, 152), 1.2), "bone_dark", parts=[P])
-    # armoured back over the tank (the ribs come out from under it), spikes on it
-    saddle = Ellipsoid((-3.6, 0, 14.6), (10.2, 3.0, 2.3)) & Box((-30, -10, 13.92), (30, 10, 40))
+        vm.paint(Plate((x, 0, cz), (0, 1, 0), (0, 0, 1), arc_band(r + 0.75, r + 1.2, -160, 160), 1.2), "bone_dark", parts=[P])
+    # armoured back over the tank, spikes on it
+    saddle = Ellipsoid((-5.6, 0, 15.2), (11.6, 3.2, 2.4)) & Box((-30, -10, 14.16), (30, 10, 40))
     vm.add(saddle, "red_dark", P)
-    vm.paint(Box((-14, -1.0, 15.8), (7, 1.0, 18)), "char", parts=[P], only=["red_dark"])
-    vm.paint(Box((-14, -3.2, 13.9), (7, 3.2, 14.9)), "char", parts=[P], only=["red_dark"])
+    vm.paint(Box((-18, -1.0, 16.4), (7, 1.0, 19)), "char", parts=[P], only=["red_dark"])
+    vm.paint(Box((-18, -3.4, 14.1), (7, 3.4, 15.1)), "char", parts=[P], only=["red_dark"])
     for (x, h, hw) in SPIKES:
-        spike(vm, x, 15.84, h, hw, P)
-    # chest / shoulders (front of the body), armour plate and a glowing vent
-    ch = Ellipsoid((4.6, 0, 11.8), (3.7, 3.3, 3.7)) & Box((-30, -10, ZD), (30, 10, 40))
+        spike(vm, x, 16.32, h, hw, P)
+    # chest / shoulders, armour plate and a glowing vent
+    ch = Ellipsoid((5.0, 0, 11.8), (3.9, 3.5, 3.9)) & Box((-30, -10, ZD), (30, 10, 40))
     vm.add(ch, "red_dark", P)
-    vm.paint(Box((1.0, -3.6, 5.5), (9.0, 3.6, 9.6)), "char", parts=[P], only=["red_dark"])
-    vm.add(sym(Box((1.44, 2.88, 10.08), (4.32, 3.36, 13.44))), "char", P)
-    vm.cut(sym(Box((2.24, 3.20, 11.20), (3.52, 3.37, 12.32))))
+    vm.paint(Box((1.0, -3.8, 5.5), (9.4, 3.8, 9.6)), "char", parts=[P], only=["red_dark"])
+    vm.add(sym(Box((2.88, 3.04, 10.08), (5.76, 3.52, 13.44))), "char", P)
+    vm.cut(sym(Box((3.68, 3.36, 11.20), (4.96, 3.53, 12.32))))
     for side in (-1, 1):
-        neon(f"Vent{'L' if side > 0 else 'R'}", P, (2.88, side * 3.24, 11.76), (1.28, 0.16, 1.12), color=C_VENT)
+        neon(f"Vent{'L' if side > 0 else 'R'}", P, (4.32, side * 3.40, 11.76), (1.28, 0.16, 1.12), color=C_VENT)
     # glowing pipes from the tank collar down to the cab, held by dark brackets
-    pipe = [(1.6, 3.55, 13.4), (3.2, 3.65, 13.4), (4.6, 3.75, 11.2), (6.4, 3.75, 10.8), (7.6, 3.75, 8.6), (10.2, 3.75, 8.4)]
+    pipe = [(3.0, 3.85, 13.6), (4.2, 3.95, 13.6), (5.2, 4.0, 11.2), (6.8, 4.0, 10.8), (7.8, 4.0, 8.6), (10.2, 3.75, 8.4)]
     for side in (-1, 1):
         for j in range(len(pipe) - 1):
             a, b = np.array(pipe[j]), np.array(pipe[j + 1])
@@ -325,28 +325,41 @@ def body(vm):
             zv = np.cross(t, yv)
             R = np.column_stack([t, yv, zv])
             neon(f"Pipe{'L' if side > 0 else 'R'}{j + 1}", P, (a + b) / 2, (L_ + 0.48, 0.52, 0.52), R=R, color=C_PIPE)
-        for (x, z) in ((3.2, 13.4), (4.6, 11.2), (10.0, 8.4)):
-            ya, yb = sorted((side * 2.4, side * 4.16))
+        for (x, z) in ((4.2, 13.6), (5.2, 11.2), (10.88, 9.36)):
+            ya, yb = sorted((side * 2.4, side * 4.32))
             vm.add(Box((x - 0.32, ya, z - 0.32), (x + 0.32, yb, z + 0.32)), "metal_dark", P, big=False)
-    LIGHTS.append(dict(name="LavaGlow", part=L, position=(cx, 0, cz), color=(255, 130, 40), range=16, brightness=2))
-    # tail: rises above the crates then sweeps down, spikes on top (dark red, then bone near the tip)
-    tail = [(-12.4, 0, 13.4), (-15.0, 0, 14.4), (-17.6, 0, 14.0), (-19.6, 0, 12.4), (-21.0, 0, 10.6), (-21.9, 0, 9.4)]
-    tr = [2.0, 1.7, 1.35, 1.0, 0.65, 0.38]
+    LIGHTS.append(dict(name="LavaGlow", part=L, position=at((cx, 0, cz)), color=(255, 130, 40), range=18, brightness=2))
+    # long tail: rises over the crates, then hangs down behind the wagon, spikes on top
+    tail = [(-12.8, 0, 13.6), (-15.6, 0, 14.6), (-18.2, 0, 13.8), (-20.2, 0, 11.6), (-21.4, 0, 9.0), (-21.9, 0, 6.6)]
+    tr = [2.1, 1.8, 1.45, 1.1, 0.75, 0.45]
     vm.add(Scale(Sweep(tail[:4], tr[:4]), (0, 0, 0), (1, 0.85, 1)), "red", "Tail1", big=True)
     vm.add(Scale(Sweep(tail[3:], tr[3:]), (0, 0, 0), (1, 0.85, 1)), "red", "Tail1", big=False)
-    tx_, tz_ = [p_[0] for p_ in tail][::-1], [p_[2] for p_ in tail][::-1]
-    trr = tr[::-1]
-    vm.paint(Box((-23, -2.2, 6), (-11.5, 2.2, 17)), "red_dark", parts=["Tail1"],
-             where=lambda X, Y, Z: Z < np.interp(X, tx_, tz_) - 0.35 * np.interp(X, tx_, trr))
-    vm.setpart(Box((-30, -10, 0), (-16.32, 10, 40)), "Tail2", parts=["Tail1"])
-    vm.setpart(Box((-30, -10, 0), (-19.2, 10, 40)), "Tail3", parts=["Tail2"])
-    for (x, h, hw, part, m) in ((-13.4, 2.3, 0.66, "Tail1", "red_dark"), (-14.9, 2.1, 0.6, "Tail1", "red_dark"),
-                                (-16.6, 1.9, 0.55, "Tail2", "red_dark"), (-18.0, 1.6, 0.5, "Tail2", "bone"),
-                                (-19.4, 1.35, 0.44, "Tail3", "bone"), (-20.5, 1.1, 0.38, "Tail3", "bone"),
-                                (-21.4, 0.8, 0.3, "Tail3", "bone")):
-        ztop = np.interp(x, tx_, tz_) + 0.8 * np.interp(x, tx_, trr) - 0.25
+    pts = np.array(tail)
+    dense = np.concatenate([np.linspace(pts[i], pts[i + 1], 10, endpoint=False) for i in range(len(pts) - 1)] + [pts[-1:]])
+    drad = np.interp(np.linspace(0, len(tail) - 1, len(dense)), np.arange(len(tail)), tr)
+    tg = np.gradient(dense, axis=0)
+    tg /= np.linalg.norm(tg, axis=1, keepdims=True)
+    up = np.stack([-tg[:, 2], np.zeros(len(tg)), tg[:, 0]], 1)        # perpendicular, on the upper side
+    up[up[:, 2] < 0] *= -1
+
+    def under(X, Y, Z):
+        Q = np.stack([X.ravel(), Y.ravel(), Z.ravel()], 1)
+        out = np.zeros(len(Q), bool)
+        for s0 in range(0, len(Q), 8000):
+            q = Q[s0:s0 + 8000]
+            k = np.argmin(((q[:, None, :] - dense[None, :, :]) ** 2).sum(2), 1)
+            out[s0:s0 + 8000] = ((q - dense[k]) * up[k]).sum(1) < -0.35 * drad[k]
+        return out.reshape(X.shape)
+    vm.paint(Box((-23.5, -2.4, 5), (-11.5, 2.4, 17)), "red_dark", parts=["Tail1"], where=under)
+    vm.setpart(Box((-30, -10, 0), (-16.8, 10, 40)), "Tail2", parts=["Tail1"])
+    vm.setpart(Box((-30, -10, 0), (-20.16, 10, 40)), "Tail3", parts=["Tail2"])
+    for k, (h, hw, m) in zip((3, 9, 15, 21, 27, 33, 39, 45),
+                             ((2.3, 0.66, "red_dark"), (2.2, 0.62, "red_dark"), (2.0, 0.58, "red_dark"), (1.8, 0.52, "bone"),
+                              (1.6, 0.46, "bone"), (1.35, 0.40, "bone"), (1.1, 0.34, "bone"), (0.8, 0.28, "bone"))):
+        c = dense[k] + up[k] * (drad[k] * 0.8 - 0.2)
+        part = "Tail1" if c[0] > -16.8 else ("Tail2" if c[0] > -20.16 else "Tail3")
         poly = [(-hw, 0), (hw, 0), (0.0, 0.6 * h), (-hw * 1.2, h)]
-        vm.add(Plate((x, 0, ztop), (1, 0, 0), (0, 0, 1), poly, 0.48), m, part, big=False)
+        vm.add(Plate(c, -tg[k], up[k], poly, 0.48), m, part, big=False)
 
 
 def tooth(vm, x0, ya, yb, zedge, rows, part, down=True):
@@ -365,14 +378,18 @@ JAW_TOP_Z = [13.76, 13.36, 12.72, 12.0, 11.68]
 def neck_head(vm):
     N, H, J = "Neck", "Head", "Jaw"
     # neck from the chest up to the back of the head, pale throat underneath
-    neck = [(5.6, 0, 12.4), (7.6, 0, 13.6), (9.6, 0, 14.6), (11.4, 0, 15.4)]
-    vm.add(Scale(Sweep(neck, [2.7, 2.5, 2.35, 2.25]), (0, 0, 0), (1, 0.88, 1)), "red", N)
+    neck = [(5.6, 0, 11.5), (7.4, 0, 13.4), (9.2, 0, 15.2), (11.0, 0, 16.4), (12.2, 0, 16.9)]
+    vm.add(Scale(Sweep(neck, [2.8, 2.6, 2.45, 2.35, 2.3]), (0, 0, 0), (1, 0.88, 1)) & Box((-30, -10, ZD), (30, 10, 40)),
+           "red", N)
     vm.setpart(Box((-30, -10, 0), (7.2, 10, 40)), "Body", parts=[N])
-    vm.paint(Box((5, -3, 9), (12.5, 3, 15)), "bone", parts=[N], only=["red"],
-             where=lambda X, Y, Z: Z < 12.4 + 0.517 * (X - 5.6) - 1.25)
-    for (x, z, h, hw) in ((7.8, 15.6, 2.1, 0.62), (9.6, 16.4, 1.9, 0.58)):
+    vm.paint(Box((4, -3, 7), (13.5, 3, 17)), "bone", parts=[N], only=["red"],
+             where=lambda X, Y, Z: Z < 11.5 + 0.84 * (X - 5.6) - 1.4)                  # pale throat
+    for (x, z, h, hw) in ((6.6, 14.9, 2.0, 0.62), (8.4, 16.4, 2.3, 0.62), (10.2, 17.6, 2.1, 0.58)):
         poly = [(-hw, 0), (hw, 0), (0.0, 0.6 * h), (-hw * 1.15, h)]
         vm.add(Plate((x, 0, z), (1, 0, 0), (0, 0, 1), poly, 0.48), "char", N, big=False)
+    global OFF
+    OFF = np.array([0.48, 0, 1.44])        # the head sits higher and a bit further forward
+    vm.offset = OFF.copy()
     # ---- head: big skull (big cubes), short tall snout sculpted in small cubes, open jaw
     vm.setpart(Box((10.56, -10, 0), (30, 10, 40)), H, parts=[N])
     skull = Box((10.56, -2.40, 13.92), (15.84, 2.40, 17.76)) & Ellipsoid((13.2, 0, 15.8), (3.7, 2.9, 2.95))
@@ -431,16 +448,25 @@ def neck_head(vm):
             ya, yb = sorted((side * 1.28, side * 1.44))
             vm.add(Box((x0, ya, zt - 0.32), (x0 + 0.48, yb, zt)), "tooth", J, big=False)   # root in the gum
             tooth(vm, x0, ya, yb, zt, rows, J, down=False)
-    ATTACHMENTS.append(dict(name="FireBreath", part=H, position=(20.6, 0, 13.0), direction=(1, 0, -0.15)))
-    LIGHTS.append(dict(name="MouthGlow", part=H, position=(18.6, 0, 13.0), color=(255, 150, 50), range=8, brightness=1.5))
+    ATTACHMENTS.append(dict(name="FireBreath", part=H, position=at((20.6, 0, 13.0)), direction=(1, 0, -0.15)))
+    LIGHTS.append(dict(name="MouthGlow", part=H, position=at((18.6, 0, 13.0)), color=(255, 150, 50), range=8, brightness=1.5))
 
 
 def make():
+    global OFF
     NEON.clear()
     ATTACHMENTS.clear()
     LIGHTS.clear()
-    vm = VoxelModel((-22.56, -6.24, -0.48), (23.04, 6.24, 21.6))
+    vm = VoxelModel((-23.52, -6.24, -0.48), (23.04, 6.24, 23.52))
+    OFF = np.zeros(3)
+    vm.offset = OFF.copy()
     wagon(vm)
+    OFF = np.array([0, 0, -0.96])          # the dragon's body sits one stud lower: room for tall spikes
+    vm.offset = OFF.copy()
     body(vm)
-    neck_head(vm)
+    OFF = np.zeros(3)
+    vm.offset = OFF.copy()
+    neck_head(vm)                          # sets its own offset for the head
+    OFF = np.zeros(3)
+    vm.offset = OFF.copy()
     return vm

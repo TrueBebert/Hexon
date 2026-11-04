@@ -107,38 +107,89 @@ def quad_voxels(q):
     return out
 
 
-def sym_quads(expo, mask, mat, maxlen=48):
-    """Quads of the y >= 0 half, mirrored to the other half when the geometry is
-    symmetric.  src[i] = index of the quad whose texels quad i reuses (mirrored), or -1."""
-    Ny = mask.shape[1]
-    h = Ny // 2
-    half = mask.copy()
-    half[:, :h, :] = False
-    lower = mask.copy()
-    lower[:, h:, :] = False
-    sym_ok = Ny % 2 == 0
-    if sym_ok:
-        for d, (axis, _) in enumerate(DIRS):
-            dm = d ^ 1 if axis == 1 else d
-            A = (expo.E[d] & lower)[:, :h, :]
-            Bm = np.flip((expo.E[dm] & half)[:, h:, :], axis=1)
-            if not np.array_equal(A, Bm):
-                sym_ok = False
-                break
-    qh = chunk_quads(expo, half, maxlen)
-    if not sym_ok:
-        ql = chunk_quads(expo, lower, maxlen)
-        return qh + ql, [-1] * (len(qh) + len(ql))
-    quads, src = list(qh), [-1] * len(qh)
-    for i, q in enumerate(qh):
-        m = mirror_quad(q, Ny)
+def mirror_quad_x(q, Nx):
+    """Mirror a quad across the plane X = 0 (grid centred: lattice x <-> Nx - x)."""
+    d, plane, u0, v0, du, dv = q
+    axis, _ = DIRS[d]
+    if axis == 0:
+        return (d ^ 1, Nx - plane, u0, v0, du, dv)
+    return (d, plane, Nx - (u0 + du), v0, du, dv)   # x is the U axis for y and z faces
+
+
+def _mirror_ok(expo, lower, upper, axis_m, h):
+    """True when the exposed faces of `lower` are the mirror image of those of `upper` along axis_m."""
+    for d, (axis, _) in enumerate(DIRS):
+        dm = d ^ 1 if axis == axis_m else d
+        sl_lo = [slice(None)] * 3
+        sl_hi = [slice(None)] * 3
+        sl_lo[axis_m] = slice(0, h)
+        sl_hi[axis_m] = slice(h, None)
+        A = (expo.E[d] & lower)[tuple(sl_lo)]
+        Bm = np.flip((expo.E[dm] & upper)[tuple(sl_hi)], axis=axis_m)
+        if not np.array_equal(A, Bm):
+            return False
+    return True
+
+
+def masks_quads(Ms, maxlen=48):
+    """Greedy quads from explicit per-direction face masks."""
+    quads = []
+    for d, (axis, sign) in enumerate(DIRS):
+        M = Ms[d]
+        if not M.any():
+            continue
+        Mt = np.moveaxis(M, axis, 0)
+        ks = np.nonzero(Mt.reshape(Mt.shape[0], -1).any(1))[0]
+        for k in ks.tolist():
+            for (u0, v0, du, dv) in greedy_rects(Mt[k], maxlen):
+                plane = k + (1 if sign > 0 else 0)
+                quads.append((d, plane, u0, v0, du, dv))
+    return quads
+
+
+def sym_quads(expo, mask, mat, maxlen=48, mirror_x=False):
+    """Quads of one half (or quarter) of the part, mirrored onto the other halves wherever the mirrored
+    faces really exist; faces left over are meshed directly.  Returns (quads, src, mir): src[i] = index
+    of the quad whose texels quad i reuses, or -1; mir[i] = bit 0 mirrored across Y = 0, bit 1 across X = 0."""
+    Nx, Ny = mask.shape[0], mask.shape[1]
+    hy, hx = Ny // 2, Nx // 2
+    use_y = Ny % 2 == 0
+    use_x = mirror_x and Nx % 2 == 0
+    base = mask.copy()
+    if use_y:
+        base[:, :hy, :] = False
+    if use_x:
+        base[:hx, :, :] = False
+    E = [expo.E[d] & mask for d in range(6)]
+    qb = chunk_quads(expo, base, maxlen)
+    cov = [E[d] & base for d in range(6)]
+    quads, src, mir = list(qb), [-1] * len(qb), [0] * len(qb)
+    variants = ([1] if use_y else []) + ([2] if use_x else []) + ([3] if use_x and use_y else [])
+    for i, q in enumerate(qb):
         a = quad_voxels(q)
-        b = a.copy()
-        b[:, 1] = Ny - 1 - b[:, 1]
-        same = np.array_equal(mat[a[:, 0], a[:, 1], a[:, 2]], mat[b[:, 0], b[:, 1], b[:, 2]])
-        quads.append(m)
-        src.append(i if same else -1)
-    return quads, src
+        ma = mat[a[:, 0], a[:, 1], a[:, 2]]
+        for flags in variants:
+            m = q
+            b = a.copy()
+            if flags & 1:
+                m = mirror_quad(m, Ny)
+                b[:, 1] = Ny - 1 - b[:, 1]
+            if flags & 2:
+                m = mirror_quad_x(m, Nx)
+                b[:, 0] = Nx - 1 - b[:, 0]
+            dm = m[0]
+            if not E[dm][b[:, 0], b[:, 1], b[:, 2]].all() or cov[dm][b[:, 0], b[:, 1], b[:, 2]].any():
+                continue
+            cov[dm][b[:, 0], b[:, 1], b[:, 2]] = True
+            same = np.array_equal(ma, mat[b[:, 0], b[:, 1], b[:, 2]])
+            quads.append(m)
+            src.append(i if same else -1)
+            mir.append(flags)
+    rest = masks_quads([E[d] & ~cov[d] for d in range(6)], maxlen)
+    quads += rest
+    src += [-1] * len(rest)
+    mir += [0] * len(rest)
+    return quads, src, mir
 
 
 def shell_quads(cells, D, maxlen=128):

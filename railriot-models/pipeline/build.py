@@ -125,11 +125,23 @@ def build(module_name, version, render=True, views=None, quick=False):
 
     # chunks ----------------------------------------------------------------------
     # quads of the y >= 0 half are mirrored to the other half and share their texels
-    def make_quads(m):
-        return sym_quads(expo, m, vm.mat)
+    def make_quads(m, flat=False, mirror_x=False):
+        if not flat:
+            q, src, mir = sym_quads(expo, m, vm.mat, mirror_x=mirror_x)
+            mirror_flags.setdefault(id(m), mir)
+            return q, src, mir
+        # flat parts (glowing crystals, flames...): one quad set per material, no texels of their own,
+        # every face samples a small colour swatch (src = -2)
+        q = []
+        for mid in np.unique(vm.mat[m]):
+            qq = chunk_quads(expo, m & (vm.mat == mid))
+            q += [tuple(x) + (int(mid),) for x in qq]
+        return q, [-2] * len(q), [0] * len(q)
 
-    def painted_area(q, src):
-        return quads_area([x for x, s_ in zip(q, src) if s_ < 0])
+    def painted_area(q, src, mir=None):
+        return quads_area([x for x, s_ in zip(q, src) if s_ == -1])
+
+    mirror_flags = {}
 
     chunks = []
     for p in parts:
@@ -138,20 +150,30 @@ def build(module_name, version, render=True, views=None, quick=False):
         mask = vm.part == vm.part_names.index(p["name"])
         if not mask.any():
             continue
-        q, src = make_quads(mask)
+        flat = bool(p.get("flat"))
+        mx = bool(p.get("mirror_x"))
+        q, src, mir = make_quads(mask, flat, mx)
         a = painted_area(q, src)
         k = max(1, math.ceil(a / CAP), math.ceil(len(q) * 4 / MAX_TRIS))
-        masks, qs = [mask], [(q, src)]
+        masks, qs = [mask], [(q, src, mir)]
         while k > 1:
             masks = split_part(expo, mask, k)
-            qs = [make_quads(m) for m in masks]
+            qs = [make_quads(m, flat, mx) for m in masks]
             if all(painted_area(*x) <= CAP and len(x[0]) * 4 <= MAX_TRIS for x in qs):
                 break
             k += 1
-        for i, (m, (qq, ss)) in enumerate(zip(masks, qs)):
+        for i, (m, (qq, ss, mm)) in enumerate(zip(masks, qs)):
             nm = p["name"] if i == 0 else f"{p['name']}_{i + 1}"
-            chunks.append(dict(name=nm, part=p["name"], mask=m, quads=qq, src=ss, area=painted_area(qq, ss)))
+            chunks.append(dict(name=nm, part=p["name"], mask=m, quads=qq, src=ss, mir=mm, area=painted_area(qq, ss)))
     print(f"[{name}] chunks: {[(c['name'], len(c['quads']), c['area']) for c in chunks]}")
+
+    # colour swatches for flat parts (one per material and face direction), top-left of every page
+    swatch = {}
+    for c in chunks:
+        for q, s_ in zip(c["quads"], c["src"]):
+            if s_ == -2 and (q[6], q[0]) not in swatch:
+                swatch[(q[6], q[0])] = len(swatch)
+    reserve = (4 + 4 * len(swatch), 4)
 
     # pages -----------------------------------------------------------------------
     cap = CAP
@@ -162,11 +184,11 @@ def build(module_name, version, render=True, views=None, quick=False):
             sizes, refs = [], []
             for ci in pg:
                 for qi, q in enumerate(chunks[ci]["quads"]):
-                    if chunks[ci]["src"][qi] >= 0:
+                    if chunks[ci]["src"][qi] != -1:
                         continue
                     sizes.append(tx.quad_px_size(q))
                     refs.append((ci, qi))
-            pos = tx.skyline_pack(sizes, ATLAS, ATLAS)
+            pos = tx.skyline_pack(sizes, ATLAS, ATLAS, reserve=reserve)
             if pos is None:
                 ok = False
                 break
@@ -183,7 +205,7 @@ def build(module_name, version, render=True, views=None, quick=False):
     allq, gidx = [], {}
     for ci, c in enumerate(chunks):
         for qi, q in enumerate(c["quads"]):
-            if c["src"][qi] < 0:
+            if c["src"][qi] == -1:
                 gidx[(ci, qi)] = len(allq)
                 allq.append(q)
     cells = tx.Cells(np.array(allq))
@@ -203,6 +225,10 @@ def build(module_name, version, render=True, views=None, quick=False):
     for pi, plc in enumerate(placements):
         placed = [(gidx[(ci, qi)], x, y) for ((ci, qi), (x, y)) in plc]
         img = painter.paint_page(placed, ATLAS)
+        face_tone = [0.90, 0.90, 1.0, 1.0, 1.10, 0.80]
+        for (mid, d), k in swatch.items():
+            rgb = np.array(spec.PALETTE.get(vm.mat_names[mid], {}).get("rgb", (255, 0, 255)), float)
+            img[0:4, 4 + 4 * k:8 + 4 * k] = np.clip(rgb * face_tone[d], 0, 255).astype(np.uint8)
         fn = f"{name}_atlas{pi + 1}.png"
         path = os.path.join(outdir, fn)
         nbytes = save_png(img, path)
@@ -250,8 +276,17 @@ def build(module_name, version, render=True, views=None, quick=False):
         shellq = []
         Ny = vm.dims[1]
         for qi, q in enumerate(c["quads"]):
-            cor = quad_corners(q)
+            cor = quad_corners(q[:6])
             sq_ = c["src"][qi]
+            if sq_ == -2:  # flat part: every corner samples the swatch of its material and direction
+                k = swatch[(q[6], q[0])]
+                suv = ((6 + 4 * k) / ATLAS, 1.0 - 2.0 / ATLAS)
+                base = len(V)
+                for cc in cor:
+                    V.append(origin + cc * s)
+                    UV.append(suv)
+                F.append([base, base + 1, base + 2, base + 3])
+                continue
             tq = c["quads"][sq_] if sq_ >= 0 else q      # quad that owns the texels
             d, plane, u0, v0, du, dv = tq
             axis, sign = DIRS[d]
@@ -261,8 +296,12 @@ def build(module_name, version, render=True, views=None, quick=False):
             for cc in cor:
                 V.append(origin + cc * s)
                 tc = cc.copy()
-                if sq_ >= 0:
-                    tc[1] = Ny - tc[1]                      # mirrored corner on the source quad
+                if sq_ >= 0:                                # mirrored corner on the source quad
+                    flags = c["mir"][qi]
+                    if flags & 1:
+                        tc[1] = Ny - tc[1]
+                    if flags & 2:
+                        tc[0] = vm.dims[0] - tc[0]
                 px = x0 + 1 + (tc[U] - u0) * tx.PX
                 py = y0 + 1 + (v0 + dv - tc[Vax]) * tx.PX
                 UV.append((px / ATLAS, 1.0 - py / ATLAS))

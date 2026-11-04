@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw
 def sheet(outdir):
     name = os.path.basename(os.path.dirname(os.path.abspath(outdir)))
     r = os.path.join(outdir, "renders")
-    big = ["34", "profile", "back34"]
+    big = ["ref", "34", "profile", "back34"]
     small = ["front", "head_34", "head_front", "head_profile", "head_low"]
     W = 1600
     rows = []

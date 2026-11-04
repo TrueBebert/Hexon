@@ -397,6 +397,7 @@ class VoxelModel:
         self.mat_names = ["empty"]
         self.part_names = ["none"]
         self.log = []
+        self.offset = np.zeros(3)   # translation applied to every shape (move a whole group of shapes)
 
     # ids --------------------------------------------------------------
     def mid(self, name):
@@ -418,13 +419,14 @@ class VoxelModel:
         cell = self.b if big else self.s
         n = np.array(self.dims) // (self.r if big else 1)
         lo, hi = shape.bounds()
+        lo, hi = lo + self.offset, hi + self.offset
         i0 = np.clip(np.floor((lo - self.origin) / cell).astype(int) - 1, 0, n)
         i1 = np.clip(np.ceil((hi - self.origin) / cell).astype(int) + 1, 0, n)
         if np.any(i1 <= i0):
             return None
         axes = [self.origin[d] + (np.arange(i0[d], i1[d]) + 0.5) * cell for d in range(3)]
         X, Y, Z = np.meshgrid(*axes, indexing="ij")
-        P = np.stack([X.ravel(), Y.ravel(), Z.ravel()], 1)
+        P = np.stack([X.ravel(), Y.ravel(), Z.ravel()], 1) - self.offset
         m = shape.contains(P).reshape(X.shape)
         if big:
             m = m.repeat(self.r, 0).repeat(self.r, 1).repeat(self.r, 2)
@@ -469,7 +471,7 @@ class VoxelModel:
             m &= np.isin(self.part[sl], [self.pid(p) for p in parts])
         if where is not None:
             X, Y, Z = np.meshgrid(*self.centers(sl), indexing="ij")
-            m &= where(X, Y, Z)
+            m &= where(X - self.offset[0], Y - self.offset[1], Z - self.offset[2])
         self.mat[sl][m] = self.mid(mat)
         return int(m.sum())
 
@@ -490,7 +492,7 @@ class VoxelModel:
         (one small cube per character).  rows[0] is the TOP row.  colors maps
         characters to material names ('.' or ' ' = untouched).  Voxels are
         recoloured from the surface inward (along -normal) for `depth` cells."""
-        o, u, v = v3(origin), v3(u), v3(v)
+        o, u, v = v3(origin) + self.offset, v3(u), v3(v)
         n = v3(normal) if normal is not None else np.cross(u, v)
         H = len(rows)
         cnt = 0
@@ -517,6 +519,22 @@ class VoxelModel:
                     elif found:
                         break
         return cnt
+
+    def symmetrize_x(self, part):
+        """Make one part exactly symmetric front/back: its -X half becomes the mirror of its +X half
+        (needs a grid centred on X = 0).  Never overwrites other parts."""
+        pid = self.pid(part)
+        nx = self.dims[0]
+        assert nx % 2 == 0 and abs(self.origin[0] + nx * self.s / 2) < 1e-6, "grid not centred in X"
+        h = nx // 2
+        lo = self.part[:h] == pid
+        self.mat[:h][lo] = 0
+        self.part[:h][lo] = 0
+        src_m = np.flip(self.mat[h:], axis=0)
+        src_p = np.flip(self.part[h:], axis=0)
+        put = (src_p == pid) & (self.mat[:h] == 0)
+        self.mat[:h][put] = src_m[put]
+        self.part[:h][put] = pid
 
     # analysis ------------------------------------------------------------
     def world(self, idx):
