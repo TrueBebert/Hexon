@@ -8,11 +8,11 @@ Modèles voxel générés par code (Python + numpy, Blender en ligne de commande
 | `storm_serpent` | serpent d'orage bleu, wagon en bois | ≈ 44,5 × 12,8 × 29,4 | 29 058 | 3 × 1024² |
 | `fire_dragon` | dragon de feu, wagon industriel | ≈ 44,3 × 10,6 × 21,1 | 24 864 | 3 × 1024² |
 
-Version actuelle : **v2** (`output/<modèle>/v2/`). La v1 est gardée à côté pour comparer.
+Version actuelle : **v3** (`output/<modèle>/v3/`). Les v1 et v2 sont gardées à côté pour comparer.
 
 Petit cube 0,16 stud, gros cube 0,48 stud (classe « boss colossal »).
 
-## Fichiers livrés (`output/<modèle>/v2/`)
+## Fichiers livrés (`output/<modèle>/v3/`)
 
 - `<modèle>.glb` et `<modèle>.fbx` : un mesh par partie (et quelques morceaux quand une partie dépasse
   un atlas), pivot de chaque partie au centre de son articulation, 1 unité = 1 stud.
@@ -74,6 +74,20 @@ Dépendances : Python 3 avec numpy, scipy et Pillow ; Blender 4 (avec numpy) ; p
 - `build.py` : orchestration, manifeste. `blender_export.py` : glb/fbx et rendus Cycles.
 
 ## Historique
+
+**v3** (wagons plus simples, animaux plus grands et plus détaillés)
+- Dragon de feu : cuve plus longue à 5 côtes épaisses, 10 piques très hautes avec un cœur de flammes à part
+  qui brille (partie `Flames`), tête plus haute sur un cou plus long, queue qui pend derrière le wagon,
+  écailles peintes. Wagon : plus de caisses latérales ni de rebord, rambardes allégées, griffures peintes,
+  défenses en gros cubes. Le wagon passe de 7 400 à 3 650 triangles.
+- Serpent d'orage : corps plus massif (bosse, épaule), cou très épais à la base, volutes en relief
+  (3 disques en escalier), cristaux hexagonaux pointus (partie `Crystals`, qui brille), crinière de nuages
+  continue le long du cou, bande néon jusqu'à la gorge, écailles peintes. Wagon : défenses en gros cubes,
+  lanternes sans montants, mousse peinte, os croisés retirés. Le wagon passe de 17 000 à 5 800 triangles.
+- Pipeline : parties « à plat » (une pastille de couleur par matière et orientation, aucun texel : idéal
+  pour ce qui passe en Neon), parties lumineuses dans les rendus, partage des texels avant/arrière
+  tolérant (le wagon du serpent tient dans un seul mesh), décalage de groupes de formes, vue `ref`
+  au même angle que les références.
 
 **v2**
 - Dragon de feu : tête refaite (museau plus court qui descend du front vers le nez, crâne plus bas, arcade
